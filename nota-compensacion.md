@@ -1,7 +1,7 @@
 # NOTA INTERNA — COMPENSACIÓN DE EJECUCIÓN
 
 **Proyecto:** Asistente IA Mincyt
-**De:** Jred
+**De:** Juan Rojas
 **Para:** Oscar
 **Fecha:** Mayo 2026
 **Confidencial — solo uso interno Shift**
@@ -24,7 +24,7 @@ Esta nota define mi compensación por la ejecución completa del proyecto, dado 
 |---|---|
 | Horas extra estimadas | 100 horas |
 | Tarifa horaria fullstack interna | USD 30/h |
-| **Compensación total a Jred** | **USD 3,000** |
+| **Compensación total a Juan Rojas** | **USD 3,000** |
 
 ---
 
@@ -48,7 +48,7 @@ Las horas se ejecutan fuera del horario contratado (L-V 8:00-17:00) durante los 
 | Concepto | Monto |
 |---|---|
 | Cotizado al cliente | USD 14,500 |
-| Compensación a Jred (ejecución técnica) | USD 3,000 |
+| Compensación a Juan Rojas (ejecución técnica) | USD 3,000 |
 | **Margen neto para Shift** | **USD 11,500 (79%)** |
 
 ---
@@ -57,7 +57,7 @@ Las horas se ejecutan fuera del horario contratado (L-V 8:00-17:00) durante los 
 
 Pago contra hitos del proyecto, alineados con los pagos del cliente:
 
-| Hito | Monto a Jred |
+| Hito | Monto a Juan Rojas |
 |---|---|
 | Firma del contrato | USD 750 |
 | Cierre semana 5 — base de conocimiento operativa | USD 750 |
