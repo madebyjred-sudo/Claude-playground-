@@ -132,6 +132,7 @@ def convert(md_path: Path, pdf_path: Path, extra_css: str = "") -> None:
 if __name__ == "__main__":
     base = Path(__file__).parent
     convert(base / "propuesta-mincyt.md", base / "propuesta-mincyt.pdf")
+    convert(base / "respuestas-mincyt.md", base / "respuestas-mincyt.pdf")
     convert(
         base / "nota-compensacion.md",
         base / "nota-compensacion.pdf",
