@@ -99,7 +99,7 @@ Esto es una conversación que el ciudadano hubiera tenido con un funcionario que
 
 ### Por qué Llama 4 Scout
 
-La elección del modelo no es genérica. Llama 4 Scout fue seleccionado tras verificar precios y disponibilidad al 7 de mayo de 2026 en seis proveedores (DeepInfra, OpenRouter, Together AI, Groq, Fireworks, Hugging Face). En DeepInfra el costo es **USD 0.08 por millón de tokens de entrada y USD 0.30 por millón de tokens de salida**, con context window de 10 millones de tokens — la más amplia de la industria, particularmente útil para RAG porque permite incluir contexto institucional extenso sin chunking agresivo. El modelo soporta español oficialmente, es multimodal nativo de texto e imagen, y supera en benchmarks públicos a alternativas comparables.
+La elección del modelo no es genérica. Llama 4 Scout fue seleccionado tras verificar precios y disponibilidad al 7 de mayo de 2026 en seis proveedores (DeepInfra, OpenRouter, Together AI, Groq, Fireworks, Hugging Face). En DeepInfra el costo es **USD 0.08 por millón de tokens de entrada y USD 0.30 por millón de tokens de salida** — equivalente a **USD 0.00008 y USD 0.00030 por cada 1.000 tokens**, respectivamente — con context window de 10 millones de tokens, la más amplia de la industria, particularmente útil para RAG porque permite incluir contexto institucional extenso sin chunking agresivo. El modelo soporta español oficialmente, es multimodal nativo de texto e imagen, y supera en benchmarks públicos a alternativas comparables.
 
 ### Por qué OpenRouter como capa de pago
 
@@ -245,7 +245,44 @@ El sistema de evaluación que produce las métricas (Conjunto de Casos de Prueba
 
 ---
 
-## 7. Qué se requiere del Ministerio
+## 7. Mantenimiento operativo y actualización del corpus
+
+Qdrant y el stack del asistente son operacionalmente livianos. La solución cotizada le quita al Ministerio una carga operativa que en otro contexto demandaría personal especializado dedicado.
+
+### Tareas automáticas (sin intervención humana)
+
+- Backups diarios mediante snapshots con retención de 14 días
+- Monitoreo continuo de CPU, RAM, disco y latencia con alertas a contactos del Ministerio
+- Optimización interna del índice vectorial (rebuild HNSW y compactación de segmentos, ejecutado nativamente por Qdrant)
+- Rotación de logs y renovación automática de certificados TLS
+- Aplicación de parches de seguridad del sistema operativo (unattended-upgrades)
+
+### Tareas operables por el Ministerio tras la capacitación de 4 horas
+
+- Ingesta de contenido nuevo (programas, becas, convocatorias, documentos institucionales) mediante script de línea de comando documentado
+- Upgrade de versión menor de Qdrant (reemplazo de imagen Docker con reinicio supervisado, paso a paso en runbook)
+- Restauración desde snapshot ante incidente menor
+- Verificación de estado del sistema y revisión de métricas
+
+### Tareas que requieren criterio experto (cotizable como retainer opcional)
+
+- Upgrades de versión mayor de Qdrant (con frecuencia anual o superior)
+- Tuning fino de parámetros HNSW si las métricas degradan
+- Re-indexaciones totales por cambio de modelo de embedder
+
+### Modelos de actualización del corpus
+
+Tres opciones según necesidad del Ministerio:
+
+1. **Script CLI (incluido en el alcance cotizado).** Carpeta de archivos + ejecución de un comando documentado + capacitación cubierta en las 4 horas. Mínimo viable, transparente, auditable, completamente operable por el equipo del Ministerio post-handover.
+2. **Panel administrativo web (cotizable como evolución).** Interfaz con autenticación que permite gestionar el corpus desde UI gráfica accesible para personal no-técnico. Estimado en 30-50 horas adicionales.
+3. **Sincronización automática del CMS al pipeline RAG (cotizable como evolución).** Webhook del CMS del Ministerio dispara la re-ingesta automática cada vez que se publica contenido nuevo en mincyt.gob.ve. Estimado en 60-100 horas adicionales según el CMS de origen.
+
+La recomendación para el alcance inicial es la Opción 1: minimiza desarrollo, maximiza control y queda completamente operable por el equipo del Ministerio tras la capacitación. Las opciones 2 y 3 quedan disponibles como evolución cuando el Ministerio lo decida.
+
+---
+
+## 8. Qué se requiere del Ministerio
 
 El éxito del proyecto depende de que el Ministerio provea acceso e información que el asistente necesita para servir al ciudadano. Cada solicitud se traduce en mejor servicio público.
 
@@ -333,7 +370,7 @@ El Ministerio designa **una persona técnica o semi-técnica** que recibe la cap
 
 ---
 
-## 8. Inversión
+## 9. Inversión
 
 **USD 14,500 — desarrollo completo, 10 semanas**
 
@@ -361,6 +398,27 @@ Incluye:
 | Cierre de semana 8 — asistente integrado en staging | USD 4,350 (30%) | Mes 2 |
 | Handover final — producción y capacitación | USD 1,450 (10%) | Mes 2.5 |
 
+### Stack y proveedores día 0+1
+
+Tabla consolidada de cada componente operativo del asistente, con su proveedor, dónde corre y su costo mensual estimado en escenario base:
+
+| Componente | Proveedor / Tecnología | Dónde corre | USD/mes |
+|---|---|---|---|
+| Inferencia LLM (Llama 4 Scout) | OpenRouter (saldo USDT) → backend DeepInfra | API externa | 12-45 |
+| Backend FastAPI | Self-hosted (Python/FastAPI, open-source) | Servidor del Ministerio (1ª opción) / Hetzner CCX23 (2ª opción) | 0 / 27 |
+| Base de datos vectorial | Qdrant self-hosted (open-source) | Mismo servidor del backend | 0 |
+| Servicio de embeddings | BGE-M3 self-hosted (open-source) | Mismo servidor del backend | 0 |
+| Almacenamiento del corpus | Sistema de archivos del servidor o MinIO local | Servidor del Ministerio | 0 |
+| Monitoreo y observabilidad | Grafana + Prometheus + Loki self-hosted | Servidor del Ministerio | 0 |
+| Backups | Replicación a almacenamiento institucional | Mincyt / Cenditel | 0 |
+| Email transaccional (alertas) | SMTP institucional del Ministerio | Mincyt | 0 |
+| Dominio y certificado SSL | Subdominio del Ministerio (asistente.mincyt.gob.ve) | Mincyt | 0 |
+| Proxy egress (Venezuela → API LLM) | Instancia mínima en Hetzner Brasil o Panamá | Externo | 5-7 |
+| **Total mensual mes 1** (con infraestructura del Ministerio) | | | **~17-19** |
+| **Total mensual mes 12 al pico de adopción** | | | **~50-52** |
+
+La única dependencia de proveedor externo recurrente es la **inferencia LLM vía OpenRouter**, contratada directamente por el Ministerio con saldo en USDT. El **proxy egress** es una instancia auxiliar mínima que solo actúa como puente saliente y no almacena ningún dato. Todo el resto del stack corre en infraestructura aportada por el Ministerio o de su ecosistema institucional (CNTI/Cenditel), reforzando soberanía digital y eliminando dependencias en planes comerciales que pudieran cambiar condiciones.
+
 ### Costos operativos posteriores
 
 Una vez en producción, el asistente consume tokens de inferencia cada vez que un usuario interactúa. El Ministerio paga directamente al proveedor de inferencia (OpenRouter, vía saldo USDT). Sin intermediación del Proveedor, sin lock-in, sin facturación cruzada.
@@ -378,7 +436,7 @@ Una vez en producción, el asistente consume tokens de inferencia cada vez que u
 - **Pico mes 12:** ~USD 65 mensuales
 - **Acumulado anual estimado:** USD 480-540
 
-Esta proyección está calculada sobre tráfico real verificado de mincyt.gob.ve (78.000 visitas mensuales, según SimilarWeb abril 2026), conversión visita-a-consulta progresiva del 8% al 25% durante los 12 meses, 9.000 tokens IN + 1.250 tokens OUT por conversación promedio (2.5 turnos), Llama 4 Scout en DeepInfra a USD 0.08 IN / USD 0.30 OUT por millón de tokens. Cada conversación cuesta aproximadamente **USD 0.0011**.
+Esta proyección está calculada sobre tráfico real verificado de mincyt.gob.ve (78.000 visitas mensuales, según SimilarWeb abril 2026), conversión visita-a-consulta progresiva del 8% al 25% durante los 12 meses, 9.000 tokens IN + 1.250 tokens OUT por conversación promedio (2.5 turnos), Llama 4 Scout en DeepInfra a USD 0.08 IN / USD 0.30 OUT por millón de tokens. **Cada iteración (un turno usuario→asistente) cuesta aproximadamente USD 0.000438; cada conversación completa de 2.5 turnos cuesta aproximadamente USD 0.0011.**
 
 ### Arquitectura de control de gasto
 
@@ -399,7 +457,7 @@ Bajo el escenario alternativo Hetzner Cloud: agregar USD 27 mensuales por el VPS
 
 ---
 
-## 9. Lo que NO incluye (cotizable como evolución posterior)
+## 10. Lo que NO incluye (cotizable como evolución posterior)
 
 - Capacidades de voz (entrada por dictado, salida por audio)
 - Panel de administración con editor visual de respuestas
@@ -414,12 +472,12 @@ Bajo el escenario alternativo Hetzner Cloud: agregar USD 27 mensuales por el VPS
 
 ---
 
-## 10. Supuestos y riesgos
+## 11. Supuestos y riesgos
 
 **Supuestos:**
 
 - El Ministerio provee el corpus en formatos procesables o autoriza su recolección.
-- La infraestructura del Ministerio cumple los requerimientos descritos en la sección 7.D, o se contrata Hetzner Cloud como alternativa.
+- La infraestructura del Ministerio cumple los requerimientos descritos en la sección 8.D, o se contrata Hetzner Cloud como alternativa.
 - Existe punto único de contacto y Mesa de Certificación con disponibilidad real durante el proyecto.
 - OpenRouter mantiene la modalidad de pago en USDT vigente al momento de la firma.
 
