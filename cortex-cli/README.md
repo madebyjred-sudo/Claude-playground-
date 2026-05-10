@@ -23,47 +23,36 @@ guardado en tu Drive, usable con Claude, ChatGPT, Gemini, lo que sea.
 
 ---
 
-## Instalación
+## Instalación · una sola línea
 
-### Opción A · clonar y arrancar (recomendado)
+Abrí Terminal y pegá esto. Una vez en la vida:
 
 ```bash
-git clone https://github.com/madebyjred-sudo/cortex-cli.git
-cd cortex-cli
+curl -LsSf https://raw.githubusercontent.com/madebyjred-sudo/CORTEX-CLI/main/install.sh | sh
+```
+
+Después de eso, **abrí un terminal nuevo y escribí `cortex`**. Listo.
+
+> El installer usa [`uv`](https://docs.astral.sh/uv/) (gestor moderno de
+> Python) — lo instala si no lo tenés. Cortex queda registrado como
+> herramienta global en `~/.local/bin/cortex`.
+
+### Para desarrolladores · clonar y modificar
+
+```bash
+git clone https://github.com/madebyjred-sudo/CORTEX-CLI.git
+cd CORTEX-CLI
 ./quickstart.sh
-cortex
 ```
 
-`quickstart.sh` instala `uv` si hace falta, registra `cortex` como
-herramienta global y verifica que esté en tu PATH. Después de eso podés
-correr `cortex` desde cualquier directorio, en cualquier terminal, sin
-activar venv.
+Esto hace lo mismo pero en modo `--editable`: cambios al código toman
+efecto al reiniciar `cortex` sin reinstalar.
 
-### Opción B · una línea con uvx (cuando esté publicado en PyPI)
+### Desinstalar
 
 ```bash
-uvx cortex-cli
+uv tool uninstall cortex-cli
 ```
-
-[`uvx`](https://docs.astral.sh/uv/guides/tools/) descarga, instala y
-ejecuta sin tocar tu sistema. ¿No tenés `uv` todavía?:
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-(Windows: `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`)
-
-### Opción C · uv tool install manual
-
-```bash
-git clone https://github.com/madebyjred-sudo/cortex-cli.git
-cd cortex-cli
-uv tool install --editable .
-cortex
-```
-
-Para desinstalar: `uv tool uninstall cortex-cli`.
 
 ---
 
