@@ -42,47 +42,49 @@ class CreateScreen(Screen):
         yield Footer()
 
     def on_mount(self) -> None:
-        self._render_step1()
+        self.run_worker(self._render_step1(), exclusive=True)
 
     # ───────── Step 1: choose source folder ─────────
 
-    def _render_step1(self) -> None:
-        self.body.remove_children()
+    async def _render_step1(self) -> None:
+        await self.body.remove_children()
         lang = self._lang()
         default_inbox = self.app.cfg.cortex_root / "inbox"
         self.inbox_path = default_inbox
 
-        self.body.mount(Static(ascii_art.get_logo(lang), classes="logo"))
-        self.body.mount(Static(t("create.title").upper(), classes="heading"))
-        self.body.mount(Static(t("create.step1"), classes="subheading"))
-        self.body.mount(Static(ascii_art.DIVIDER, classes="divider"))
-        self.body.mount(Static(""))
-
         items = [
             ListItem(Label(f"  ▸  {t('create.source.default')}\n     {default_inbox}"), id="src-default"),
-            # Future: choose folder, paste text, paste wiki
-            # We keep the menu single-option for MVP simplicity but show the rest as muted
         ]
-        self.body.mount(ListView(*items, id="create-options"))
+        await self.body.mount_all([
+            Static(ascii_art.get_logo(lang), classes="logo"),
+            Static(t("create.title").upper(), classes="heading"),
+            Static(t("create.step1"), classes="subheading"),
+            Static(ascii_art.DIVIDER, classes="divider"),
+            Static(""),
+            ListView(*items, id="create-step1-options"),
+        ])
 
     # ───────── Step 2: pick documents ─────────
 
-    def _render_step2(self) -> None:
-        self.body.remove_children()
+    async def _render_step2(self) -> None:
+        await self.body.remove_children()
         lang = self._lang()
 
         all_files = ingest.list_documents(self.inbox_path) if self.inbox_path else []
 
-        self.body.mount(Static(ascii_art.get_logo(lang), classes="logo"))
-        self.body.mount(Static(t("create.title").upper(), classes="heading"))
-        self.body.mount(Static(t("create.step2"), classes="subheading"))
-        self.body.mount(Static(ascii_art.DIVIDER, classes="divider"))
-        self.body.mount(Static(""))
-        self.body.mount(Static(t("create.detected", path=str(self.inbox_path))))
-        self.body.mount(Static(""))
+        widgets = [
+            Static(ascii_art.get_logo(lang), classes="logo"),
+            Static(t("create.title").upper(), classes="heading"),
+            Static(t("create.step2"), classes="subheading"),
+            Static(ascii_art.DIVIDER, classes="divider"),
+            Static(""),
+            Static(t("create.detected", path=str(self.inbox_path))),
+            Static(""),
+        ]
 
         if not all_files:
-            self.body.mount(Static(t("create.empty"), classes="warning"))
+            widgets.append(Static(t("create.empty"), classes="warning"))
+            await self.body.mount_all(widgets)
             return
 
         # For simplicity, all files are selected by default
@@ -93,54 +95,61 @@ class CreateScreen(Screen):
             size_kb = p.stat().st_size // 1024
             label_text = f"  [✓]  {p.name}  ·  {size_kb} KB"
             items.append(ListItem(Label(label_text), id=f"file-{i}"))
-        self.body.mount(ListView(*items, id="create-options"))
-        self.body.mount(Static(""))
-        self.body.mount(Static(
-            t("create.selected", n=len(self.selected_files), words="?"),
-            id="selection-summary",
-            classes="muted",
-        ))
-        self.body.mount(Static(""))
-        self.body.mount(Static("[ENTER] continuar / continue   [ESC] atrás / back", classes="muted"))
+        widgets.extend([
+            ListView(*items, id="create-step2-files"),
+            Static(""),
+            Static(
+                t("create.selected", n=len(self.selected_files), words="?"),
+                id="selection-summary",
+                classes="muted",
+            ),
+            Static(""),
+            Static("[ENTER] continuar / continue   [ESC] atrás / back", classes="muted"),
+        ])
+        await self.body.mount_all(widgets)
 
     # ───────── Step 3: name ─────────
 
-    def _render_step3(self) -> None:
-        self.body.remove_children()
+    async def _render_step3(self) -> None:
+        await self.body.remove_children()
         lang = self._lang()
 
-        self.body.mount(Static(ascii_art.get_logo(lang), classes="logo"))
-        self.body.mount(Static(t("create.title").upper(), classes="heading"))
-        self.body.mount(Static(t("create.step3"), classes="subheading"))
-        self.body.mount(Static(ascii_art.DIVIDER, classes="divider"))
-        self.body.mount(Static(""))
         self.name_input = Input(
             placeholder=t("create.name.placeholder"),
             id="name-input",
         )
-        self.body.mount(self.name_input)
-        self.body.mount(Static(""))
-        self.body.mount(Static(t("create.location"), classes="muted"))
-        self.body.mount(Static(
-            f"  {self.app.cfg.cortex_root}/<nombre>/",
-            id="location-preview",
-            classes="muted",
-        ))
-        self.body.mount(Static(""))
-        self.body.mount(Static("[ENTER] " + t("create.button") + "   [ESC] " + t("nav.back"), classes="muted"))
+        await self.body.mount_all([
+            Static(ascii_art.get_logo(lang), classes="logo"),
+            Static(t("create.title").upper(), classes="heading"),
+            Static(t("create.step3"), classes="subheading"),
+            Static(ascii_art.DIVIDER, classes="divider"),
+            Static(""),
+            self.name_input,
+            Static(""),
+            Static(t("create.location"), classes="muted"),
+            Static(
+                f"  {self.app.cfg.cortex_root}/<nombre>/",
+                id="location-preview",
+                classes="muted",
+            ),
+            Static(""),
+            Static("[ENTER] " + t("create.button") + "   [ESC] " + t("nav.back"), classes="muted"),
+        ])
         self.set_focus(self.name_input)
 
     # ───────── Step 4: process & finish ─────────
 
-    def _render_step4_processing(self) -> None:
-        self.body.remove_children()
+    async def _render_step4_processing(self) -> None:
+        await self.body.remove_children()
         lang = self._lang()
-        self.body.mount(Static(ascii_art.get_logo(lang), classes="logo"))
-        self.body.mount(Static(t("process.title").upper(), classes="heading"))
-        self.body.mount(Static(ascii_art.DIVIDER, classes="divider"))
-        self.body.mount(Static(""))
         self.process_log = Static("", id="process-log")
-        self.body.mount(self.process_log)
+        await self.body.mount_all([
+            Static(ascii_art.get_logo(lang), classes="logo"),
+            Static(t("process.title").upper(), classes="heading"),
+            Static(ascii_art.DIVIDER, classes="divider"),
+            Static(""),
+            self.process_log,
+        ])
 
     def _process(self) -> tuple[Path, float]:
         start = time.time()
@@ -219,15 +228,15 @@ class CreateScreen(Screen):
 
     def watch_step(self, step: int) -> None:
         if step == 1:
-            self._render_step1()
+            self.run_worker(self._render_step1(), exclusive=True)
         elif step == 2:
-            self._render_step2()
+            self.run_worker(self._render_step2(), exclusive=True)
         elif step == 3:
-            self._render_step3()
+            self.run_worker(self._render_step3(), exclusive=True)
         elif step == 4:
-            self._render_step4_processing()
+            self.run_worker(self._render_step4_processing(), exclusive=True)
             # Schedule processing after the screen renders
-            self.set_timer(0.1, self._do_process_and_finish)
+            self.set_timer(0.3, self._do_process_and_finish)
 
     def _do_process_and_finish(self) -> None:
         try:
