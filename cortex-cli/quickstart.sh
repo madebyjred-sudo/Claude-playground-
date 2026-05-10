@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # quickstart.sh — bootstrap CORTEX-CLI from a fresh clone.
 #
-# Creates a virtual environment, installs cortex-cli in editable mode,
-# and runs `cortex --help` to verify everything works.
+# Installs cortex globally so you can run `cortex` from any directory
+# without sourcing a venv. Uses `uv tool install` (preferred) or falls
+# back to a local venv install.
 #
 # Usage:
 #   ./quickstart.sh
 # or:
 #   bash quickstart.sh
 #
-# After this finishes, activate the venv and launch the TUI:
-#   source .venv/bin/activate
+# After this finishes, just run:
 #   cortex
 
 set -e
@@ -40,61 +40,61 @@ BANNER
 # 1. Python check
 info "verificando python..."
 if ! command -v python3 >/dev/null 2>&1; then
-  fail "python3 no encontrado. instalá Python 3.10+."
+  fail "python3 no encontrado. instalá Python 3.10+ (brew install python@3.12 en mac)."
 fi
 PY_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
 ok "python ${PY_VERSION}"
 
-# 2. Create venv if missing
-if [ ! -d ".venv" ]; then
-  info "creando entorno virtual en .venv/..."
-  python3 -m venv .venv
-  ok "venv creado"
+# 2. uv check (install if missing)
+if ! command -v uv >/dev/null 2>&1; then
+  warn "uv no encontrado. lo instalo ahora (gestor moderno de Python, requerido para cortex global)..."
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  # Make uv available in this shell session
+  export PATH="$HOME/.local/bin:$PATH"
+  if ! command -v uv >/dev/null 2>&1; then
+    fail "uv no quedó disponible. abrí un terminal nuevo y volvé a correr ./quickstart.sh"
+  fi
+  ok "uv instalado"
 else
-  ok "venv ya existe"
+  ok "uv ya disponible"
 fi
 
-# 3. Activate venv (in-shell, this script)
-# shellcheck disable=SC1091
-source .venv/bin/activate
+# 3. Install cortex as a global tool
+info "instalando cortex como herramienta global..."
+# --force so re-runs upgrade an existing install cleanly
+uv tool install --force --editable . >/dev/null 2>&1 || {
+  warn "uv tool install falló, reintentando sin --editable..."
+  uv tool install --force . >/dev/null 2>&1 || fail "uv tool install falló. corré manualmente: uv tool install --editable ."
+}
+ok "cortex instalado globalmente"
 
-# 4. Upgrade pip silently
-info "actualizando pip..."
-pip install --quiet --upgrade pip
-ok "pip actualizado"
-
-# 5. Install in editable mode with all deps
-info "instalando cortex-cli (editable)..."
-pip install --quiet -e .
-ok "cortex-cli instalado"
-
-# 6. Verify the entry point
-info "verificando comando cortex..."
+# 4. Make sure uv tool bin dir is on PATH
+UV_BIN_DIR="$(uv tool dir --bin 2>/dev/null || echo "$HOME/.local/bin")"
 if ! command -v cortex >/dev/null 2>&1; then
-  fail "el comando 'cortex' no quedó disponible. revisá pyproject.toml."
+  warn "el comando 'cortex' no está en tu PATH todavía."
+  warn "agregá esta línea a tu ~/.zshrc o ~/.bashrc:"
+  printf "\n      export PATH=\"%s:\$PATH\"\n\n" "$UV_BIN_DIR"
+  warn "después abrí un terminal nuevo y corré: cortex"
+  exit 0
 fi
-cortex --version >/dev/null
-ok "cortex --version: $(cortex --version)"
 
-# 7. Optional: run smoke test if a test PDF is available
-if [ -f "/tmp/test-inbox/codigo_etica_mincyt.pdf" ]; then
-  info "corriendo smoke test contra PDF de prueba..."
-  python3 tests/smoke_test.py >/dev/null && ok "smoke test pasó"
-fi
+# 5. Verify version
+ok "cortex --version: $(cortex --version)"
+ok "ubicación: $(command -v cortex)"
 
 cat <<'NEXT'
 
   ╭───────────────────────────────────────────────────────────╮
   │                                                           │
-  │   ✓  todo listo. para arrancar la TUI:                    │
+  │   ✓  todo listo. para arrancar la TUI desde cualquier     │
+  │      directorio:                                          │
   │                                                           │
-  │      source .venv/bin/activate                            │
   │      cortex                                               │
   │                                                           │
-  │   o usá los subcomandos directos:                         │
+  │   subcomandos directos:                                   │
   │                                                           │
   │      cortex update          # aplicar updates del clipboard
-  │      cortex browse          # ver córtex existentes       │
+  │      cortex browse          # ver córtex existentes
   │      cortex --help          # ayuda                       │
   │                                                           │
   ╰───────────────────────────────────────────────────────────╯

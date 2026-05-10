@@ -25,18 +25,19 @@ guardado en tu Drive, usable con Claude, ChatGPT, Gemini, lo que sea.
 
 ## Instalación
 
-### Opción A · clonar y arrancar (recomendado por ahora)
+### Opción A · clonar y arrancar (recomendado)
 
 ```bash
 git clone https://github.com/madebyjred-sudo/cortex-cli.git
 cd cortex-cli
 ./quickstart.sh
-source .venv/bin/activate
 cortex
 ```
 
-`quickstart.sh` crea un venv, instala todas las dependencias y verifica
-que el comando `cortex` quedó disponible. Una sola corrida.
+`quickstart.sh` instala `uv` si hace falta, registra `cortex` como
+herramienta global y verifica que esté en tu PATH. Después de eso podés
+correr `cortex` desde cualquier directorio, en cualquier terminal, sin
+activar venv.
 
 ### Opción B · una línea con uvx (cuando esté publicado en PyPI)
 
@@ -53,14 +54,16 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 (Windows: `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`)
 
-### Opción C · pip directo
+### Opción C · uv tool install manual
 
 ```bash
 git clone https://github.com/madebyjred-sudo/cortex-cli.git
 cd cortex-cli
-pip install -e .
+uv tool install --editable .
 cortex
 ```
+
+Para desinstalar: `uv tool uninstall cortex-cli`.
 
 ---
 
