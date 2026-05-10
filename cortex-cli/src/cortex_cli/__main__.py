@@ -61,8 +61,10 @@ def main(argv: list[str] | None = None) -> int:
         elif sub == "create":
             initial = "create"
 
-    # Override on_mount if a subcommand was given
-    if initial:
+    # Override on_mount if a subcommand was given.
+    # If config doesn't exist yet, skip the subcommand and run setup first
+    # (the user can run the subcommand again after setup completes).
+    if initial and app.cfg is not None:
         original_mount = app.on_mount
 
         def custom_mount() -> None:

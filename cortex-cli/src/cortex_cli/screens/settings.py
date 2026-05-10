@@ -20,6 +20,7 @@ class SettingsScreen(Screen):
 
     def compose(self) -> ComposeResult:
         lang = self._lang()
+        cortex_root = self.app.cfg.cortex_root if (hasattr(self.app, "cfg") and self.app.cfg) else "—"
 
         with Vertical():
             yield Static(ascii_art.get_logo(lang), classes="logo")
@@ -27,7 +28,7 @@ class SettingsScreen(Screen):
             yield Static(ascii_art.DIVIDER, classes="divider")
             yield Static("")
             yield Static(t("settings.cortex_root"), classes="label")
-            yield Static(f"  {self.app.cfg.cortex_root}")
+            yield Static(f"  {cortex_root}")
             yield Static("")
             yield Static(t("settings.language"), classes="label")
             yield ListView(

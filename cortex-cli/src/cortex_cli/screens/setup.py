@@ -64,7 +64,12 @@ class SetupScreen(Screen):
         config.save(cfg)
         self.app.cfg = cfg
         self.app.notify(t("setup.saved", path=str(config.CONFIG_PATH)))
-        self.app.pop_screen()
+        # If setup was the only screen (first run), go to home.
+        # Otherwise we were opened from settings — pop back.
+        if len(self.app.screen_stack) <= 2:
+            self.app.switch_screen("home")
+        else:
+            self.app.pop_screen()
 
     def _lang(self) -> str:
         return self.app.cfg.language if (hasattr(self.app, "cfg") and self.app.cfg) else "es"

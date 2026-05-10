@@ -40,9 +40,8 @@ class CortexApp(App):
 
     def on_mount(self) -> None:
         if self.cfg is None:
-            # First run: setup, then home
+            # First run: setup. setup will switch to home once config is saved.
             self.push_screen("setup")
-            self.push_screen("home")
         else:
             self.push_screen("home")
 
