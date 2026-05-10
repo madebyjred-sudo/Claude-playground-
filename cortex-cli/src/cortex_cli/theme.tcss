@@ -1,0 +1,160 @@
+/* CORTEX-CLI · Textual theme
+ * Inspired by editorial brutalism: cream + navy + terracotta.
+ * Adapted to terminal palette constraints (tn = terminal name).
+ */
+
+* {
+  text-style: none;
+}
+
+Screen {
+  background: $surface;
+  color: $text;
+}
+
+/* Horizontal rule used between sections */
+.divider {
+  color: $accent;
+  text-style: dim;
+}
+
+/* Section headings — small caps tracking */
+.heading {
+  color: $primary;
+  text-style: bold;
+  margin-bottom: 1;
+}
+
+.subheading {
+  color: $secondary;
+  text-style: dim;
+  margin-bottom: 1;
+}
+
+.label {
+  color: $accent;
+  text-style: bold;
+}
+
+.muted {
+  color: $text-muted;
+}
+
+.success {
+  color: $success;
+  text-style: bold;
+}
+
+.warning {
+  color: $warning;
+}
+
+.error {
+  color: $error;
+}
+
+/* The big logo banner at the top */
+.logo {
+  color: $primary;
+  text-style: bold;
+  margin-bottom: 1;
+}
+
+.tagline {
+  color: $text-muted;
+  text-style: italic;
+  margin-bottom: 2;
+}
+
+/* Frame around major content blocks */
+.frame {
+  border: round $primary;
+  padding: 1 2;
+  margin: 1 0;
+}
+
+.frame-banner {
+  border: double $primary;
+  padding: 1 3;
+  margin: 0 0 1 0;
+}
+
+/* Footer with key bindings */
+Footer {
+  background: $surface;
+  color: $text-muted;
+}
+
+Header {
+  background: $primary;
+  color: $surface;
+}
+
+/* Button-like list items */
+ListView {
+  background: $surface;
+}
+
+ListItem {
+  background: $surface;
+  padding: 0 1;
+}
+
+ListItem:hover {
+  background: $boost;
+}
+
+ListItem.--highlight {
+  background: $primary;
+  color: $surface;
+  text-style: bold;
+}
+
+/* Inputs */
+Input {
+  background: $surface;
+  color: $text;
+  border: tall $primary;
+}
+
+Input:focus {
+  border: tall $accent;
+}
+
+/* Progress bars */
+ProgressBar {
+  color: $primary;
+}
+
+/* Specific screens */
+
+#home-menu {
+  width: 70;
+  margin: 2 4;
+}
+
+#setup-options, #create-options {
+  width: 80;
+  margin: 1 4;
+}
+
+#process-log {
+  width: 80;
+  height: auto;
+  margin: 2 4;
+  padding: 1 2;
+}
+
+#result-summary {
+  width: 80;
+  margin: 1 4;
+}
+
+#name-input {
+  width: 60;
+  margin: 1 0;
+}
+
+DataTable {
+  background: $surface;
+}

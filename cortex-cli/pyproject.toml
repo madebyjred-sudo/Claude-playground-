@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cortex-cli"
+version = "0.1.0"
+description = "Tu cuaderno cognitivo. Convertí cualquier documento en un córtex que cualquier IA puede usar."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Juan Manuel Rojas" },
+]
+keywords = ["ai", "rag", "knowledge", "cli", "tui", "claude", "chatgpt", "llm", "cortex"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console :: Curses",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business",
+  "Topic :: Text Processing",
+]
+dependencies = [
+  "textual>=0.85.0",
+  "rich>=13.7.0",
+  "pyperclip>=1.8.2",
+  "pypdf>=5.0.0",
+  "python-docx>=1.1.0",
+  "ebooklib>=0.18",
+  "beautifulsoup4>=4.12.0",
+  "requests>=2.31.0",
+  "platformdirs>=4.2.0",
+  "tomli>=2.0.1; python_version < '3.11'",
+  "tomli-w>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/madebyjred-sudo/cortex-cli"
+Repository = "https://github.com/madebyjred-sudo/cortex-cli"
+Issues = "https://github.com/madebyjred-sudo/cortex-cli/issues"
+
+[project.scripts]
+cortex = "cortex_cli.__main__:main"
+cortex-cli = "cortex_cli.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cortex_cli"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/cortex_cli/locales" = "cortex_cli/locales"
+"src/cortex_cli/theme.tcss" = "cortex_cli/theme.tcss"
