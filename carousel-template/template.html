@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1080" />
+  <title>Carrousel</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main id="root"></main>
+
+  <script src="./patterns.js"></script>
+  <script src="./data.js"></script>
+  <script>
+    // Render del carrousel
+    (function render() {
+      const data = window.CAROUSEL;
+      const root = document.getElementById("root");
+      const total = String(data.pages.length).padStart(2, "0");
+
+      data.pages.forEach((p, idx) => {
+        const num = idx + 1;
+        const numStr = String(num).padStart(2, "0");
+
+        const section = document.createElement("section");
+        section.className = `page page-${p.type}`;
+        section.dataset.index = num;
+
+        // HEADER
+        const header = `
+          <header class="meta">
+            <span class="brand">${data.brand}</span>
+            <span class="date">${data.date}</span>
+          </header>
+        `;
+
+        // CONTENIDO según tipo
+        let content = "";
+        if (p.type === "cover") {
+          content = `
+            <div class="content">
+              <h1 class="headline">${p.headline}</h1>
+              <p class="aphorism">${p.aphorism || ""}</p>
+              <div class="pattern pattern-${p.pattern || "bars"}">
+                ${(window.PATTERNS[p.pattern] || window.PATTERNS.bars)()}
+              </div>
+            </div>
+          `;
+        } else if (p.type === "closer") {
+          content = `
+            <div class="content">
+              <h1 class="headline">${p.headline}</h1>
+              <p class="signature">${data.author}</p>
+              <div class="pattern pattern-${p.pattern || "bars"}">
+                ${(window.PATTERNS[p.pattern] || window.PATTERNS.bars)()}
+              </div>
+            </div>
+          `;
+        } else {
+          // insight
+          content = `
+            <div class="content">
+              <span class="label">${p.label || ""}</span>
+              <h2 class="headline">${p.headline}</h2>
+              <p class="body">${p.body || ""}</p>
+              <p class="aphorism">${p.aphorism || ""}</p>
+              <div class="pattern pattern-${p.pattern || "bars"}">
+                ${(window.PATTERNS[p.pattern] || window.PATTERNS.bars)()}
+              </div>
+            </div>
+          `;
+        }
+
+        // FOOTER (solo en insights)
+        const footer = (p.type === "insight")
+          ? `<footer class="page-num">${numStr} / ${total}</footer>`
+          : "";
+
+        section.innerHTML = header + content + footer;
+        root.appendChild(section);
+      });
+
+      // Marca el documento como listo (lo lee Playwright)
+      document.documentElement.dataset.ready = "true";
+    })();
+  </script>
+</body>
+</html>

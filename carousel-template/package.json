@@ -1,0 +1,16 @@
+{
+  "name": "carousel-template",
+  "version": "1.0.0",
+  "description": "Template para generar carrouseles editoriales con Old London + Söhne",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "build:pdf": "node build.js --pdf-only",
+    "build:png": "node build.js --png-only",
+    "preview": "npx http-server -p 8080 -c-1 -o /template.html ."
+  },
+  "dependencies": {
+    "playwright": "^1.56.1"
+  }
+}

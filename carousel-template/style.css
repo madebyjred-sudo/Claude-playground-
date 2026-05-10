@@ -1,0 +1,248 @@
+/* ============================================
+   CARROUSEL — Sistema de diseño
+   Old London (blackletter) + Söhne / Figtree (sans)
+   ============================================ */
+
+/* Fuentes locales — colocá los archivos en ./fonts/ */
+@font-face {
+  font-family: "Old London";
+  src: url("./fonts/old-london.ttf") format("truetype");
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Söhne";
+  src: url("./fonts/sohne-buch.otf") format("opentype"),
+       url("./fonts/sohne-buch.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Söhne";
+  src: url("./fonts/sohne-kraftig.otf") format("opentype"),
+       url("./fonts/sohne-kraftig.woff2") format("woff2");
+  font-weight: 600;
+  font-display: block;
+}
+
+/* Fallback: Figtree + UnifrakturMaguntia desde Google Fonts (si no tenés Söhne / Old London locales) */
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=UnifrakturMaguntia&family=UnifrakturCook:wght@700&display=swap");
+
+:root {
+  /* PALETA */
+  --bg: #E8DCBE;
+  --ink: #1B2C4F;
+  --accent: #A0432B;
+  --watermark: #C9C29A;
+  --text: #1A1A1A;
+
+  /* TIPOGRAFÍAS */
+  --font-blackletter: "Old London", "UnifrakturCook", "UnifrakturMaguntia", serif;
+  --font-sans: "Söhne", "Figtree", system-ui, -apple-system, sans-serif;
+
+  /* DIMENSIONES */
+  --page-w: 1080px;
+  --page-h: 1350px;
+  --margin-x: 90px;
+  --margin-y: 80px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: #2a2a2a;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cuando se imprime a PDF, sin fondo gris */
+@media print {
+  html, body { background: var(--bg); }
+}
+
+/* ============================================
+   PÁGINA — contenedor 1080×1350
+   ============================================ */
+.page {
+  width: var(--page-w);
+  height: var(--page-h);
+  background: var(--bg);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+  margin: 24px auto;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+}
+
+.page:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
+/* Textura sutil de papel — noise SVG inline */
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.55  0 0 0 0 0.4  0 0 0 0.08 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  background-size: 200px 200px;
+}
+
+/* ============================================
+   HEADER (marca + fecha) — siempre presente
+   ============================================ */
+.meta {
+  position: absolute;
+  top: var(--margin-y);
+  left: var(--margin-x);
+  right: var(--margin-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  z-index: 10;
+}
+
+.meta .brand { letter-spacing: 0.25em; }
+.meta .date  { letter-spacing: 0.22em; }
+
+/* ============================================
+   CONTENIDO PRINCIPAL
+   ============================================ */
+.content {
+  position: absolute;
+  inset: 0;
+  padding: calc(var(--margin-y) + 60px) var(--margin-x) calc(var(--margin-y) + 30px);
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-top: 220px;
+  margin-bottom: 32px;
+}
+
+.headline {
+  font-family: var(--font-blackletter);
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.cover .headline,
+.closer .headline {
+  font-size: 132px;
+  margin-top: 280px;
+  max-width: 880px;
+}
+
+.insight .headline {
+  font-size: 96px;
+  max-width: 880px;
+  margin-bottom: auto;
+}
+
+.body {
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 640px;
+  margin-top: auto;
+  margin-bottom: 48px;
+  letter-spacing: -0.005em;
+}
+
+.body strong { font-weight: 600; color: var(--text); }
+
+.aphorism {
+  font-family: var(--font-blackletter);
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink);
+  max-width: 720px;
+  margin-bottom: 0;
+}
+
+.cover .aphorism {
+  font-size: 48px;
+  max-width: 620px;
+  margin-top: auto;
+}
+
+.signature {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: auto;
+}
+
+/* ============================================
+   FOOTER (paginación) — solo en insights
+   ============================================ */
+.page-num {
+  position: absolute;
+  bottom: var(--margin-y);
+  right: var(--margin-x);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  z-index: 10;
+}
+
+/* ============================================
+   PATRONES DECORATIVOS
+   Siempre detrás, color watermark
+   ============================================ */
+.pattern {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  color: var(--watermark);
+}
+
+.pattern svg { width: 100%; height: 100%; display: block; }
+.pattern svg * { fill: currentColor; }
+.pattern svg .stroke { fill: none; stroke: currentColor; stroke-width: 2; }
+
+/* Posicionamiento por tipo */
+.pattern-bars     { top: 280px; right: 60px;  width: 480px; height: 800px; }
+.pattern-blocks   { top: 380px; right: 100px; width: 360px; height: 380px; }
+.pattern-diamonds { top: 480px; right: 80px;  width: 400px; height: 360px; }
+.pattern-wireframe{ top: 380px; right: 80px;  width: 480px; height: 360px; }
+.pattern-arrow    { top: 720px; right: 100px; width: 320px; height: 280px; }
+
+/* En cover/closer el patrón va detrás del titular */
+.cover .pattern,
+.closer .pattern {
+  top: 280px;
+  right: 60px;
+  width: 540px;
+  height: 800px;
+}
