@@ -1,0 +1,26 @@
+{
+  "name": "cortex-launch-video",
+  "version": "0.1.0",
+  "description": "Launch motion graphics for CORTEX — built with Remotion in the JR editorial style",
+  "private": true,
+  "scripts": {
+    "start": "remotion studio src/index.ts",
+    "build": "remotion render src/index.ts cortex-launch out/cortex-launch.mp4",
+    "build:square": "remotion render src/index.ts cortex-launch-square out/cortex-launch-square.mp4",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.462",
+    "@remotion/cli": "^4.0.462",
+    "@remotion/google-fonts": "^4.0.462",
+    "@remotion/renderer": "^4.0.462",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "remotion": "^4.0.462"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  }
+}
