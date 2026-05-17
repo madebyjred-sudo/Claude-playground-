@@ -6,101 +6,53 @@
  ___/\/\/\/\/\____/\/\/\/\____/\/\____/\/\______/\/\______/\/\/\/\/\/\__/\/\____/\/\_
 ____________________________________________________________________________________
 
-  el cuaderno cognitivo · the cognitive notebook
+  la memoria que tu IA no tiene · cortex
 ```
 
-> Tu córtex vive en tu Drive y crece con cada IA que usás.
-> Your cortex lives in your Drive and grows with every AI you use.
+> Un **cortex** es un archivo Markdown que cualquier IA (Claude, ChatGPT,
+> Gemini) puede leer como memoria primaria sobre un tema.
+> Vive en tu Drive. Crece con cada conversación. Es tuyo.
 
-**CORTEX-CLI** convierte cualquier conjunto de documentos (PDF, Word,
-EPUB, texto plano, artículos de Wikipedia) en un **córtex estructurado**
-que cualquier IA puede leer como su memoria primaria. Y cuando hablás
-con esa IA, las sugerencias de actualización vuelven a tu córtex con
-un solo comando.
-
-Sin servidor. Sin API keys. Sin lock-in. Tu córtex en formato Markdown,
-guardado en tu Drive, usable con Claude, ChatGPT, Gemini, lo que sea.
+**Cortex** es un **protocolo**, no una app. No hay que instalar nada
+para usarlo. Lo único que hay que hacer es pegar un link en una
+conversación con tu IA y empezar a trabajar.
 
 ---
 
-## Instalación · una sola línea
+## Cómo se usa, en una acción
 
-Abrí Terminal y pegá esto. Una vez en la vida:
+Abrí tu IA favorita y pegá este prompt como primer mensaje:
 
-```bash
-curl -LsSf https://raw.githubusercontent.com/madebyjred-sudo/CORTEX-CLI/main/install.sh | sh
+```
+Antes de empezar, leé y seguí este protocolo:
+https://raw.githubusercontent.com/madebyjred-sudo/CORTEX-CLI/main/skills/cortex/SKILL.md
+
+Cuando lo hayas leído, confirmame y esperá mis documentos o cortex.
 ```
 
-Después de eso, **abrí un terminal nuevo y escribí `cortex`**. Listo.
+Listo. La IA ya sabe leer, crear, hacer crecer y exportar cortex.
 
-> El installer usa [`uv`](https://docs.astral.sh/uv/) (gestor moderno de
-> Python) — lo instala si no lo tenés. Cortex queda registrado como
-> herramienta global en `~/.local/bin/cortex`.
-
-### Para desarrolladores · clonar y modificar
-
-```bash
-git clone https://github.com/madebyjred-sudo/CORTEX-CLI.git
-cd CORTEX-CLI
-./quickstart.sh
-```
-
-Esto hace lo mismo pero en modo `--editable`: cambios al código toman
-efecto al reiniciar `cortex` sin reinstalar.
-
-### Desinstalar
-
-```bash
-uv tool uninstall cortex-cli
-```
+📖 **Empezá acá** → [`skills/cortex/README.md`](./skills/cortex/README.md)
+para la guía completa, el flujo de tres movimientos (crear · conversar ·
+hand-off), y ejemplos reales.
 
 ---
 
-## Cómo se usa
+## Las tres piezas
 
-### 1 · Crear un córtex
+| Pieza | Qué es | Para quién |
+|---|---|---|
+| [`skills/cortex/SKILL.md`](./skills/cortex/SKILL.md) | El **protocolo completo** en una skill que cualquier IA puede leer | Todos — esto es el corazón |
+| [`skills/cortex/CORTEX-TEMPLATE.md`](./skills/cortex/CORTEX-TEMPLATE.md) | La **plantilla vacía** de un cortex | Para escribir uno a mano |
+| [`skills/cortex/examples/`](./skills/cortex/examples/) | **Cortex reales** completos como referencia | Para ver cómo se ve un cortex maduro |
 
-1. Tirá tus PDFs / Words / EPUBs / .txt en la carpeta `inbox/` que
-   CORTEX te crea en tu Drive (la primera vez te pregunta cuál usar:
-   Google Drive, iCloud, Dropbox, OneDrive, o local).
-2. Corré `cortex` en tu terminal.
-3. Elegí "crear un nuevo córtex", seleccioná los archivos, ponele
-   nombre. CORTEX parsea, estructura y te genera dos archivos:
-   - `CORTEX.md` — el córtex estructurado en cinco capas cognitivas.
-   - `PROMPT.md` — las instrucciones para tu IA (cómo leer el córtex,
-     cómo proponer actualizaciones, las reglas de crecimiento).
-
-### 2 · Conversar con tu IA
-
-Pulsá `c` en CORTEX para copiar **prompt + córtex** al portapapeles,
-pegalo en Claude / ChatGPT / Gemini, empezá a preguntar.
-
-O pulsá `o` para abrir la carpeta y arrastrar los `.md` directo a la UI
-de tu IA (mejor para córtex grandes — algunas IAs parsean mejor archivos
-adjuntos que texto pegado).
-
-**Atajo si instalaste la [Skill de Cortex](./skills/cortex/):** ignorá
-el `PROMPT.md` y pegá solo el `CORTEX.md` — la skill ya le enseñó a tu
-IA cómo interpretarlo.
-
-### 3 · Hacer crecer el córtex
-
-Tu IA va a proponer actualizaciones al final de cada conversación útil
-en bloques estructurados (`╭─ actualización ─╮ ... ╰─╯`). Copiá la
-respuesta de tu IA, corré:
-
-```bash
-cortex update
-```
-
-CORTEX lee el portapapeles, detecta los bloques, los aplica al
-`CORTEX.md`, versiona el anterior en `historial/`, y tu Drive sincroniza
-solo. **Ningún razonamiento ocurre en CORTEX**: el LLM decide qué
-actualizar, CORTEX aplica. División limpia.
+Esas tres son suficientes para usar Cortex con cualquier IA.
 
 ---
 
-## Las cinco capas del córtex
+## Las cinco capas del cortex
+
+Un cortex es un archivo Markdown con estas cinco secciones:
 
 ```
   ┌─────────────────────────────────────────────────────────┐
@@ -112,113 +64,63 @@ actualizar, CORTEX aplica. División limpia.
   └─────────────────────────────────────────────────────────┘
 ```
 
-Cada capa cumple un rol cognitivo claro y la IA la respeta. Las dos
-primeras se generan al crear el córtex. Las tres últimas crecen con
-tus conversaciones.
+Cada capa cumple un rol cognitivo distinto. La metáfora cerebral no es
+decorativa: la IA fue inspirada en arquitecturas neurales y este formato
+las respeta. SINAPSIS son los conceptos. HIPOCAMPO los hechos.
+CONEXIONES la red inferencial. ABIERTAS lo que falta resolver.
+NOTAS PROPIAS la memoria de trabajo subjetiva.
 
 ---
 
-## Estructura de archivos
+## El CLI (opcional · para power users)
 
-```
-  <tu Drive>/Cortex/
-  ├── inbox/                              ← tirá documentos acá
-  └── nombre-del-cortex/
-      ├── CORTEX.md                       ← el córtex
-      ├── PROMPT.md                       ← instrucciones para la IA
-      ├── fuentes/                        ← copia de los originales
-      └── historial/                      ← versiones anteriores
-          ├── CORTEX-2026-05-10-1427.md
-          └── ...
-```
+Si tenés mucho volumen de documentos largos y querés un primer scaffold
+deterministico **antes** de pasar el cortex por la IA, hay un CLI Python
+en este repo que automatiza el parseo de PDFs / Word / EPUB / Wikipedia
+y arma un cortex inicial. **No es necesario para usar Cortex** — el
+protocolo + tu IA cubren el 100% del flujo.
 
-Como vive en tu Drive, podés:
-- Acceder al córtex desde tu celular u otra computadora.
-- Compartir un córtex completo enviando link de carpeta.
-- Ver el historial de cómo creció.
-- Llevarte tus archivos a otro servicio cuando quieras.
-
----
-
-## La Skill portable
-
-En [`skills/cortex/`](./skills/cortex/) hay una **skill** que enseña a
-cualquier IA cómo leer y hacer crecer un córtex:
-
-- **Con Claude:** se instala una sola vez en `~/.claude/skills/cortex/`
-  y se carga sola cuando pegás un CORTEX.
-- **Con ChatGPT / Gemini / otras:** abrís `SKILL.md`, lo pegás como
-  primer mensaje, después pegás tu CORTEX.
-
-Ver instrucciones detalladas en [`skills/cortex/README.md`](./skills/cortex/README.md).
-
----
-
-## Comandos disponibles
+Instalación en una línea (cuando lo necesites):
 
 ```bash
-cortex                  # abre la TUI principal
-cortex update           # va directo a aplicar updates desde el portapapeles
-cortex browse           # va directo a la lista de córtex existentes
-cortex --help           # ayuda
-cortex --version        # versión
+curl -LsSf https://raw.githubusercontent.com/madebyjred-sudo/CORTEX-CLI/main/install.sh | sh
 ```
+
+Después:
+
+```bash
+cortex                  # TUI con menú
+cortex update           # aplica actualizaciones del clipboard a un cortex local
+cortex --help
+```
+
+Más detalles en [`docs/cli.md`](./docs/cli.md) (TBD) o en el código en
+[`src/cortex_cli/`](./src/cortex_cli/).
 
 ---
 
 ## Filosofía
 
-CORTEX es **la mano que cuida un córtex**, no una IA en sí mismo.
-La inteligencia que decide qué entra al córtex y cómo crece es del
-LLM que vos uses. CORTEX solo:
-
-1. Parsea documentos y los estructura en capas cognitivas.
-2. Genera un PROMPT que enseña al LLM las reglas del juego.
-3. Aplica las decisiones del LLM cuando vuelven como sugerencias.
-4. Versiona y respalda en tu Drive.
-
-División limpia. Cero lock-in. Cero costo recurrente. Tu córtex es tuyo.
-
-Lee más: [`docs/filosofia-del-cortex.md`](docs/filosofia-del-cortex.md)
+- El cortex es **tuyo**. Vive en tu Drive en Markdown puro, sin lock-in.
+- La skill no decide nada — solo enseña a la IA las reglas del juego.
+- El **usuario** es la mano que guarda. La **IA** es el cerebro que
+  piensa. El **archivo** es el puente.
+- Esto no es una app: es un **protocolo**. Cualquier IA presente o
+  futura puede usarlo mientras siga el formato.
 
 ---
 
 ## Roadmap
 
-- ✅ MVP: TUI ES/EN, parsers PDF/Word/EPUB/Wikipedia/texto, generación
-       CORTEX.md + PROMPT.md, ciclo vivo con clipboard, Drive detection.
-- [ ] v0.2: panel admin web opcional para córtex muy grandes.
-- [ ] v0.3: `cortex watch` para procesar archivos de actualización
-            desde una carpeta en background.
-- [ ] v0.4: MCP server local para clientes compatibles
-            (Claude Desktop, Cursor, Cline) — cierre de loop completo.
-- [ ] v0.5: enriquecimiento opcional con LLM (sugerir SINAPSIS y
-            CONEXIONES iniciales más ricos al crear el córtex).
-
----
-
-## Contribuir
-
-CORTEX es open-source bajo licencia MIT. Bug reports, ideas y pull
-requests son bienvenidos en [GitHub](https://github.com/madebyjred-sudo/cortex-cli).
+- ✅ Protocolo CORTEX + Skill portable (Claude / ChatGPT / Gemini)
+- ✅ CLI complementario opcional (parseo PDF/Word/EPUB/Wikipedia, TUI, ciclo de updates)
+- [ ] MCP server para Claude Desktop / Cursor / Cline — cierre de loop completo sin copy-paste manual
+- [ ] OCR para PDFs escaneados
+- [ ] Transcripción de audio/video como input
+- [ ] Plantillas verticales (cortex de proyecto, cortex de libro, cortex de cliente, etc.)
 
 ---
 
 ## Autor
 
-Juan Manuel Rojas · 2026
-
-```
-                                                         
-  ┌─────────────────────────────────────┐                
-  │  CORTEX-{tema}.md                   │                
-  │  (apple notes / drive / iCloud)     │                
-  └────────────────┬────────────────────┘                
-                   │                                     
-                   │ pegás esto + el prompt              
-                   ▼                                     
-  ┌─────────────────────────────────────┐                
-  │  cualquier IA (claude/gpt/gemini)   │                
-  └─────────────────────────────────────┘                
-                                                         
-```
+Juan Manuel Rojas · 2026 · MIT License

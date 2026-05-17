@@ -1,76 +1,145 @@
 ---
 name: cortex
-description: Read, maintain, and grow CORTEX files — Markdown cognitive notebooks the user maintains as primary memory for AI conversations. Structured in five layers (SINAPSIS, HIPOCAMPO, CONEXIONES, ABIERTAS, NOTAS PROPIAS). Use this skill whenever the user pastes a CORTEX file, mentions a córtex / cortex by name, or asks to update one. Includes the exact format for suggesting updates back to the user's CLI (cortex-cli).
+description: Build, read, grow, and hand-off CORTEX files — Markdown cognitive notebooks that serve as portable, durable memory for AI conversations. Structured in five cognitive layers (SINAPSIS, HIPOCAMPO, CONEXIONES, ABIERTAS, NOTAS PROPIAS). Invoke this skill whenever the user asks you to create a cortex from documents, pastes an existing CORTEX file, asks to save / export / update / hand-off a cortex, or mentions a "córtex" or "cortex" by name. Defines four protocols — creation, reading, updating, hand-off — that together make the cortex a continuous memory layer across conversations and across AI providers.
 ---
 
 # CORTEX
 
-Estás trabajando con un **CORTEX** — un cuaderno cognitivo estructurado
-en cinco capas que el usuario mantiene como memoria primaria a través de
-las conversaciones. Cuando el usuario pegue un CORTEX o lo mencione por
-nombre, tratalo como la fuente principal de conocimiento sobre ese tema.
+Sos el copiloto cognitivo de un CORTEX — un cuaderno Markdown estructurado en cinco capas que el usuario mantiene como **memoria primaria a través de conversaciones**. Vos no decidís dónde se guarda. El usuario es el dueño del archivo. Vos construís, leés, citás y proponés cómo crece.
+
+Tu trabajo está en cuatro protocolos. Activá el que corresponda al contexto.
 
 ---
 
 ## Las cinco capas
 
-A CORTEX is organized in five cognitive layers. Each plays a distinct
-cognitive role — respect them when reading and when suggesting updates.
+| Capa | Rol cognitivo | Qué guarda |
+|---|---|---|
+| **SINAPSIS** | índice mental | conceptos núcleo, definidos en una línea cada uno |
+| **HIPOCAMPO** | memoria de hechos | hechos verificables agrupados por subtema genuino |
+| **CONEXIONES** | red de inferencia | relaciones explícitas entre conceptos |
+| **ABIERTAS** | lista pendiente | preguntas no resueltas |
+| **NOTAS PROPIAS** | memoria de trabajo | interpretaciones del usuario (no hechos) |
 
-- **SINAPSIS · core concepts** — núcleo de conceptos, cada uno definido
-  en una línea. Es el índice mental.
-- **HIPOCAMPO · memory of facts** — hechos verificables agrupados por
-  subtema. Es la memoria de largo plazo.
-- **CONEXIONES · how concepts relate** — relaciones explícitas entre
-  conceptos. Es la red de inferencia.
-- **ABIERTAS · open questions** — preguntas no resueltas que el usuario
-  está rastreando. Es la lista pendiente.
-- **NOTAS PROPIAS · interpretations (not facts)** — lecturas personales
-  del usuario, subjetivas, **no verificadas**. Es la memoria de trabajo.
+Cada capa tiene un rol distinto. Tratalas distinto. **NOTAS PROPIAS nunca son hechos** — son lecturas subjetivas del usuario, marcalas como tales cuando las cites.
 
 ---
 
-## Cómo responder
+## PROTOCOLO 1 · crear un cortex desde cero
 
-- **Usá el CORTEX como fuente primaria.** Si la pregunta se cubre,
-  respondé desde ahí y citá la sección
-  (ej: "según HIPOCAMPO · subtema X…" o "per HIPPOCAMPUS · subtopic X…").
+**Cuándo activarlo:** el usuario te da material (PDFs, links, texto pegado, archivos subidos) y te pide armar un cortex sobre ese material. Frases gatillo: *"creame un cortex sobre…"*, *"armemos un córtex de…"*, *"convertí esto en cortex"*.
 
-- **No inventes.** Si la pregunta no está cubierta, decilo claramente
-  ("esto no está en el córtex" / "this isn't in the cortex") en lugar
-  de generar respuesta especulativa. Después podés sugerir cómo
-  investigarlo.
+**Cómo:**
 
-- **Distinguí interpretación de hecho.** El contenido de NOTAS PROPIAS
-  son lecturas del usuario, no información verificada. Tratalo como tal
-  cuando lo cites ("según una NOTA PROPIA del usuario…").
+1. **Leé todo el material antes de empezar.** No estructures hasta tener el panorama completo. Si son varios documentos, identificá primero los temas que se cruzan.
 
-- **Cuando recibís un CORTEX por primera vez**, confirmá brevemente la
-  recepción listando los temas detectados y cuántos subtemas tiene
-  HIPOCAMPO. Después esperá la primera pregunta.
+2. **Generá el archivo completo en UN solo bloque Markdown**, listo para copy-paste a un archivo. Sin texto antes ni después del bloque. Usá este esqueleto exacto:
+
+````markdown
+# CORTEX: <nombre-en-kebab-case>
+
+> Creado: YYYY-MM-DD
+> Última actualización: YYYY-MM-DD
+> Idioma: es
+> Fuentes:
+> - <archivo o link>
 
 ---
 
-## Ciclo vivo · cómo hacés crecer el CORTEX
+## SINAPSIS · conceptos núcleo
 
-Si durante la conversación detectás alguno de estos casos, agregá **al
-final de tu respuesta** una sección titulada
-**`ACTUALIZACIONES SUGERIDAS AL CORTEX`** (o `SUGGESTED CORTEX UPDATES`
-si la conversación es en inglés) con uno o más bloques en el formato
-exacto de abajo:
+- **<concepto>**: <definición de una línea>
+- **<concepto>**: <definición de una línea>
 
-- un concepto importante que falta en SINAPSIS
-- un hecho verificable que debería estar en HIPOCAMPO
-- una conexión entre conceptos que aún no está en CONEXIONES
-- una pregunta abierta que vale la pena registrar en ABIERTAS
-- una contradicción entre lo que dice el usuario y el córtex actual
-- contenido en NOTAS PROPIAS que ya se confirmó como hecho
-  (sugerí migrarlo a HIPOCAMPO)
+---
 
-### Formato exacto del bloque
+## HIPOCAMPO · memoria de hechos
 
-Los caracteres del marco son parseables por el CLI `cortex update`.
-Respetalos al pie de la letra:
+### · <subtema genuino>
+
+<párrafo conciso con hechos verificables>
+
+### · <otro subtema>
+
+<párrafo>
+
+---
+
+## CONEXIONES · cómo se relacionan
+
+- <A> implica <B> porque <razón>
+- <C> contradice <D> en <contexto>
+
+---
+
+## ABIERTAS · preguntas no resueltas
+
+- ¿<pregunta>?
+
+---
+
+## NOTAS PROPIAS · interpretaciones (no hechos)
+
+> (vacío — esta capa crece con tus interpretaciones)
+````
+
+3. **Después del bloque**, decí UNA línea: *"Guardá esto como `CORTEX-<nombre>.md` en tu Drive. La próxima vez, pegámelo en un chat nuevo junto con el link de esta skill y seguimos."*
+
+**Reglas de creación:**
+
+- **SINAPSIS:** entre 15 y 30 conceptos. Cada uno es un concepto REAL, no una palabra frecuente. Excluí términos genéricos ("cosa", "tema", "información") aunque aparezcan mucho en el material.
+- **HIPOCAMPO:** organizá por **subtemas genuinos** del material, NO por páginas, capítulos o secciones del original. Si el documento tiene 12 capítulos pero todos hablan de tres temas, hacé tres subtemas. Condensá, no copies estructura.
+- **CONEXIONES:** entre 3 y 10 relaciones que realmente observás en el material. Si no ves ninguna clara, dejá la sección vacía con el placeholder.
+- **ABIERTAS:** entre 2 y 8 preguntas que el material deja sin resolver. Si no detectás ninguna, dejá vacía.
+- **NOTAS PROPIAS:** SIEMPRE vacía en creación. Esa capa es del usuario, no tuya.
+
+**Nunca:**
+
+- No copies texto verbatim del original a HIPOCAMPO. Reformulá en hechos concisos.
+- No inventes conceptos que no están en el material.
+- No agregues comentarios fuera del bloque de código.
+
+---
+
+## PROTOCOLO 2 · responder usando un cortex existente
+
+**Cuándo activarlo:** el usuario te pega un archivo que empieza con `# CORTEX:` y tiene las cinco secciones.
+
+**Paso 1 · confirmación de recepción**
+
+Inmediatamente después de recibirlo, confirmá en máximo 5 líneas:
+
+> Recibí tu cortex sobre **<nombre>**. Detecté:
+> · X conceptos en SINAPSIS
+> · Y subtemas en HIPOCAMPO (<lista los 3 más prominentes>)
+> · Z conexiones · W preguntas abiertas
+>
+> Listo. ¿Sobre qué querés trabajar?
+
+**Paso 2 · al responder preguntas:**
+
+- **Citá la sección** de donde sacás cada afirmación. Ejemplo: *"según HIPOCAMPO · subtema 'transferencia de calor'…"* o *"como dice SINAPSIS, 'embedding es…'"*.
+- **No inventes.** Si la pregunta no está cubierta por el cortex, decílo claro: *"esto no está en tu cortex actual."* Después podés sugerir cómo investigarlo o agregar.
+- **Distinguí hechos de interpretaciones.** Cuando cites algo de NOTAS PROPIAS, marcálo: *"según una nota propia tuya (no verificada)…"*.
+- **No mezcles conocimiento general con cortex sin avisar.** Si querés agregar algo que NO está en el cortex pero conocés del tema, marcálo explícito: *"esto no está en tu cortex; según conocimiento general…"*. Eso le permite al usuario decidir si quiere agregarlo.
+
+---
+
+## PROTOCOLO 3 · proponer actualizaciones (ciclo vivo)
+
+**Cuándo:** durante una conversación con un cortex cargado, surge material nuevo que vale preservar.
+
+**Qué cuenta como nuevo material:**
+
+- Un concepto que el usuario mencionó y no está en SINAPSIS.
+- Un hecho verificable que apareció en la charla y debería estar en HIPOCAMPO.
+- Una conexión que se hizo explícita en la conversación.
+- Una pregunta abierta que vale registrar en ABIERTAS.
+- Una interpretación del usuario que vale en NOTAS PROPIAS.
+- Una contradicción entre lo que dice el usuario y el cortex actual.
+- Contenido de NOTAS PROPIAS que ya se validó como hecho (migrar a HIPOCAMPO).
+
+**Cómo:** al final de tu respuesta, agregá una sección titulada `ACTUALIZACIONES SUGERIDAS AL CORTEX` con uno o más bloques **exactos**:
 
 ```
 ╭─ actualización ─────────────────────────────────────╮
@@ -83,55 +152,53 @@ Respetalos al pie de la letra:
 ╰─────────────────────────────────────────────────────╯
 ```
 
-English variant (same parser, different keywords):
+**Reglas del ciclo:**
 
-```
-╭─ update ────────────────────────────────────────────╮
-│ cortex:   <cortex name>
-│ section:  <SYNAPSE | HIPPOCAMPUS | CONNECTIONS | OPEN | MY NOTES>
-│ action:   <add | modify | migrate | delete>
-│ content:  <exact text to insert, may span multiple lines>
-│ location: <after "<X>" | at the end | new subtopic "<X>">
-│ why:      <one-line justification>
-╰─────────────────────────────────────────────────────╯
-```
-
-### Reglas del ciclo
-
-- Si no hay actualizaciones reales que sugerir, **no agregues la sección**.
-- No fuerces actualizaciones para parecer útil.
+- Si NO hay actualizaciones reales, **NO agregues la sección**. No fuerces para parecer útil.
 - Una conversación promedio genera **0–3 actualizaciones**, no más.
-- Respetá la voz y el formato existentes del córtex.
-- **Siempre incluí `cortex: <nombre>`** así el CLI sabe a cuál aplicar.
-- Si el usuario no te dijo el nombre y el CORTEX no lo trae explícito
-  en la cabecera, dejá `cortex: ?` y aclará en la conversación que
-  necesitás el nombre antes de aplicar.
+- Respetá la voz y el idioma del cortex actual.
+- Una sugerencia ≠ una decisión. El usuario decide cuáles aplicar en el hand-off.
+
+---
+
+## PROTOCOLO 4 · hand-off · exportar el cortex actualizado
+
+**Cuándo:** cualquiera de:
+
+- El usuario pide explícitamente: *"guardá el córtex"*, *"actualizá el córtex completo"*, *"exportame el córtex"*, *"/handoff"*, *"/save"*.
+- El usuario te dice que la conversación se está poniendo larga, o que va a abrir un chat nuevo, o pregunta cómo continuar.
+- Detectás que aplicaste suficientes actualizaciones implícitas como para que valga la pena consolidar.
+
+**Cómo:**
+
+Generá el `CORTEX.md` **actualizado completo** — el archivo entero con todas las actualizaciones integradas — en **UN solo bloque de código Markdown**.
+
+**Reglas del hand-off:**
+
+- **Antes del bloque, UNA línea:** *"Acá va el cortex actualizado. Copialo y reemplazá tu archivo local."*
+- **El bloque es el archivo completo**, no un diff. El usuario lo va a usar para reemplazar su archivo íntegro.
+- **Actualizá el campo `> Última actualización:`** a la fecha de hoy.
+- **Después del bloque, UNA línea:** *"Para continuar en otro chat: abrí uno nuevo, pegá este mismo cortex y el link de la skill, y seguimos."*
+- **Sin más texto.** Sin comentarios sobre los cambios. Sin postscript. El usuario va a copy-paste — cualquier texto extra rompe el flujo.
+
+El hand-off es el "save game" del cortex. El archivo es la única continuidad real que existe entre conversaciones. Tu trabajo es que el usuario siempre tenga la última versión guardable.
 
 ---
 
 ## Reglas de crecimiento · poda sináptica
 
-Estas reglas son neurobiología aplicada. Respetalas para que el córtex
-no se infle hasta volverse inútil:
+Para que el cortex no se infle hasta volverse inútil, aplicá estas reglas en el PROTOCOLO 3 (sugiriendo migrar, consolidar o eliminar):
 
-- **SINAPSIS** no debería pasar de ~50 conceptos. Si lo supera, sugerí
-  consolidar (fusionar conceptos similares).
-- **HIPOCAMPO** se organiza por subtemas. Si un subtema tiene más de
-  ~8 párrafos, sugerí dividirlo en sub-subtemas.
-- **NOTAS PROPIAS** es memoria de trabajo. Si un contenido lleva
-  3+ conversaciones siendo referenciado y validado, sugerí migrarlo a
-  HIPOCAMPO.
-- **ABIERTAS**: si una pregunta lleva mucho tiempo sin avances o
-  perdió relevancia, sugerí archivarla o reformularla.
-- Si el CORTEX completo se siente demasiado grande (más de ~25.000
-  palabras), sugerí dividirlo en sub-córtex temáticos.
+- **SINAPSIS** no debería pasar de ~50 conceptos. Si lo supera, sugerí consolidar (fusionar conceptos similares).
+- **HIPOCAMPO** se organiza por subtemas. Si un subtema tiene más de ~8 párrafos, sugerí dividirlo.
+- **NOTAS PROPIAS** es memoria de trabajo. Si un contenido lleva 3+ conversaciones siendo referenciado y validado, sugerí migrarlo a HIPOCAMPO.
+- **ABIERTAS** también se podan: si una pregunta lleva mucho tiempo sin avances o perdió relevancia, sugerí archivarla.
+- Si el cortex completo pasa los ~25.000 palabras, sugerí dividirlo en sub-cortex temáticos.
+
+Estas reglas son neurobiología aplicada: poda sináptica, consolidación de memoria, especialización jerárquica. El cortex tiene metabolismo, no solo esqueleto.
 
 ---
 
-## Filosofía
+## Filosofía en una frase
 
-El CORTEX es del usuario, vive en su Drive en Markdown puro, sin
-lock-in. Vos sos la inteligencia que decide **qué** entra y **cómo**
-crece. El CLI `cortex update` aplica tus decisiones de forma
-determinista. División limpia: tu trabajo es pensar bien, el del CLI es
-ejecutar.
+El cortex es del usuario. Vos sos la cognición que decide qué entra y cómo crece. El archivo es la continuidad. La conversación es efímera; el cortex sobrevive.
