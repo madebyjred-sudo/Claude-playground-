@@ -1,4 +1,4 @@
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -18,8 +18,8 @@ const LAYERS: {label: string; meaning: string}[] = [
  */
 export const Scene4Layers: React.FC = () => {
   const frame = useCurrentFrame();
-  const STAGGER = 14;
-  const SLIDE_DURATION = 18;
+  const STAGGER = 22;
+  const SLIDE_DURATION = 26;
 
   return (
     <AbsoluteFill
@@ -38,9 +38,10 @@ export const Scene4Layers: React.FC = () => {
           letterSpacing: '0.22em',
           color: palette.accent,
           textTransform: 'uppercase',
-          opacity: interpolate(frame, [0, 14], [0, 1], {
+          opacity: interpolate(frame, [0, 18], [0, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
+            easing: Easing.out(Easing.cubic),
           }),
           marginBottom: 32,
         }}
@@ -56,9 +57,10 @@ export const Scene4Layers: React.FC = () => {
           color: palette.ink,
           textAlign: 'center',
           marginBottom: 80,
-          opacity: interpolate(frame, [4, 18], [0, 1], {
+          opacity: interpolate(frame, [8, 28], [0, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
+            easing: Easing.out(Easing.cubic),
           }),
         }}
       >
@@ -74,15 +76,17 @@ export const Scene4Layers: React.FC = () => {
         }}
       >
         {LAYERS.map((layer, i) => {
-          const start = 24 + i * STAGGER;
+          const start = 38 + i * STAGGER;
           const end = start + SLIDE_DURATION;
           const opacity = interpolate(frame, [start, end], [0, 1], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
+            easing: Easing.out(Easing.cubic),
           });
-          const x = interpolate(frame, [start, end], [-40, 0], {
+          const x = interpolate(frame, [start, end], [-50, 0], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
+            easing: Easing.out(Easing.cubic),
           });
           return (
             <div

@@ -1,4 +1,4 @@
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -11,22 +11,23 @@ import {fontFamily} from '../fonts';
 export const Scene2Problem: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const headlineOpacity = interpolate(frame, [0, 14], [0, 1], {
+  // Headline reveals via clip-path (drawn-in) — feels like the
+  // wordmark from scene 1 in spirit, applied to type.
+  const headlineProgress = interpolate(frame, [0, 24], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const headlineY = interpolate(frame, [0, 14], [20, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+  const headlineInsetRight = (1 - headlineProgress) * 100;
 
-  const bodyOpacity = interpolate(frame, [22, 36], [0, 1], {
+  const bodyOpacity = interpolate(frame, [30, 50], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
   // Six dots dissolving sequentially after the body appears
-  const dotsStart = 50;
+  const dotsStart = 70;
 
   return (
     <AbsoluteFill
@@ -44,9 +45,8 @@ export const Scene2Problem: React.FC = () => {
           fontSize: 104,
           lineHeight: 1.05,
           color: palette.ink,
-          opacity: headlineOpacity,
-          transform: `translateY(${headlineY}px)`,
           maxWidth: 880,
+          clipPath: `inset(0 ${headlineInsetRight}% 0 0)`,
         }}
       >
         tu IA te olvida cada vez.
@@ -70,15 +70,17 @@ export const Scene2Problem: React.FC = () => {
       {/* dots dissolving */}
       <div style={{display: 'flex', gap: 16, marginTop: 64}}>
         {[0, 1, 2, 3, 4, 5].map((i) => {
-          const dotStart = dotsStart + i * 3;
-          const dotEnd = dotStart + 10;
+          const dotStart = dotsStart + i * 5;
+          const dotEnd = dotStart + 16;
           const opacity = interpolate(frame, [dotStart, dotEnd], [1, 0], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
+            easing: Easing.in(Easing.cubic),
           });
           const y = interpolate(frame, [dotStart, dotEnd], [0, 30], {
             extrapolateLeft: 'clamp',
             extrapolateRight: 'clamp',
+            easing: Easing.in(Easing.cubic),
           });
           return (
             <div

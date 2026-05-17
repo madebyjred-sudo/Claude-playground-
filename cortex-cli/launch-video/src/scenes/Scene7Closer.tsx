@@ -1,4 +1,4 @@
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -19,29 +19,30 @@ const WORDMARK_LINES = [
 export const Scene7Closer: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const wordmarkOpacity = interpolate(frame, [0, 16], [0, 1], {
+  const wordmarkOpacity = interpolate(frame, [0, 22], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
-  const taglineOpacity = interpolate(frame, [16, 32], [0, 1], {
+  const taglineProgress = interpolate(frame, [16, 48], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const taglineY = interpolate(frame, [16, 32], [16, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
+  const taglineInsetRight = (1 - taglineProgress) * 100;
 
-  const urlOpacity = interpolate(frame, [44, 60], [0, 1], {
+  const urlOpacity = interpolate(frame, [44, 66], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
   // Bars pattern drawing left → right
   const barsProgress = interpolate(frame, [56, 90], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
   return (
@@ -75,9 +76,8 @@ export const Scene7Closer: React.FC = () => {
           color: palette.ink,
           textAlign: 'center',
           maxWidth: 880,
-          opacity: taglineOpacity,
-          transform: `translateY(${taglineY}px)`,
           marginBottom: 48,
+          clipPath: `inset(0 ${taglineInsetRight}% 0 0)`,
         }}
       >
         un protocolo. cinco capas. cualquier IA.

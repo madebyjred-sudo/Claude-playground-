@@ -1,4 +1,4 @@
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -11,23 +11,27 @@ import {fontFamily} from '../fonts';
 export const Scene3Pivot: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const headlineOpacity = interpolate(frame, [0, 12], [0, 1], {
+  const headlineProgress = interpolate(frame, [0, 26], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
+  const headlineInsetRight = (1 - headlineProgress) * 100;
 
-  const sheetScale = interpolate(frame, [16, 32], [0.92, 1], {
+  const sheetScale = interpolate(frame, [22, 42], [0.92, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const sheetOpacity = interpolate(frame, [16, 32], [0, 1], {
+  const sheetOpacity = interpolate(frame, [22, 42], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
   const filename = 'CORTEX-borges-aleph.md';
-  const typeStart = 38;
-  const typePerChar = 1.4;
+  const typeStart = 50;
+  const typePerChar = 1.6;
   const typedChars = Math.max(
     0,
     Math.min(filename.length, Math.floor((frame - typeStart) / typePerChar)),
@@ -49,8 +53,8 @@ export const Scene3Pivot: React.FC = () => {
           fontSize: 128,
           lineHeight: 1.0,
           color: palette.ink,
-          opacity: headlineOpacity,
           maxWidth: 900,
+          clipPath: `inset(0 ${headlineInsetRight}% 0 0)`,
         }}
       >
         tu memoria es un archivo.
@@ -96,9 +100,10 @@ export const Scene3Pivot: React.FC = () => {
         {/* preview of the cortex structure that appears after the filename */}
         <div
           style={{
-            opacity: interpolate(frame, [56, 78], [0, 1], {
+            opacity: interpolate(frame, [82, 110], [0, 1], {
               extrapolateLeft: 'clamp',
               extrapolateRight: 'clamp',
+              easing: Easing.out(Easing.cubic),
             }),
             display: 'flex',
             flexDirection: 'column',

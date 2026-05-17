@@ -1,4 +1,4 @@
-import {AbsoluteFill, interpolate, Sequence, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, Sequence, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -10,21 +10,26 @@ interface BeatProps {
 
 const Beat: React.FC<BeatProps> = ({number, primary, secondary}) => {
   const frame = useCurrentFrame();
-  const numberScale = interpolate(frame, [0, 16], [0.7, 1], {
+  const numberScale = interpolate(frame, [0, 24], [0.7, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const numberOpacity = interpolate(frame, [0, 12], [0, 1], {
+  const numberOpacity = interpolate(frame, [0, 18], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const primaryOpacity = interpolate(frame, [8, 22], [0, 1], {
+  const primaryProgress = interpolate(frame, [14, 38], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const secondaryOpacity = interpolate(frame, [18, 32], [0, 1], {
+  const primaryInsetRight = (1 - primaryProgress) * 100;
+  const secondaryOpacity = interpolate(frame, [30, 50], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
   return (
@@ -63,8 +68,8 @@ const Beat: React.FC<BeatProps> = ({number, primary, secondary}) => {
               fontSize: 64,
               lineHeight: 1.1,
               color: palette.ink,
-              opacity: primaryOpacity,
               maxWidth: 480,
+              clipPath: `inset(0 ${primaryInsetRight}% 0 0)`,
             }}
           >
             {primary}
@@ -98,17 +103,17 @@ const Beat: React.FC<BeatProps> = ({number, primary, secondary}) => {
 export const Scene5Movements: React.FC = () => {
   return (
     <AbsoluteFill>
-      <Sequence from={0} durationInFrames={60}>
+      <Sequence from={0} durationInFrames={90}>
         <Beat number="1" primary="abrís tu IA favorita." />
       </Sequence>
-      <Sequence from={60} durationInFrames={60}>
+      <Sequence from={90} durationInFrames={90}>
         <Beat
           number="2"
           primary="pegás un link."
           secondary="raw.githubusercontent.com/.../SKILL.md"
         />
       </Sequence>
-      <Sequence from={120} durationInFrames={60}>
+      <Sequence from={180} durationInFrames={90}>
         <Beat number="3" primary="conversás." />
       </Sequence>
     </AbsoluteFill>

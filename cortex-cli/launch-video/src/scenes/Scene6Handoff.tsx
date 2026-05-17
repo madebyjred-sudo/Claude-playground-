@@ -1,4 +1,4 @@
-import {AbsoluteFill, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -20,26 +20,31 @@ export const Scene6Handoff: React.FC = () => {
     Math.min(command.length, Math.floor((frame - typeStart) / typePerChar)),
   );
 
-  const v1Opacity = interpolate(frame, [0, 14], [0, 1], {
+  const v1Opacity = interpolate(frame, [0, 18], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
   // v2 emerges offset after the command is typed
-  const v2Start = 42;
-  const v2Opacity = interpolate(frame, [v2Start, v2Start + 18], [0, 1], {
+  const v2Start = 56;
+  const v2Opacity = interpolate(frame, [v2Start, v2Start + 26], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
-  const v2Offset = interpolate(frame, [v2Start, v2Start + 18], [-20, 0], {
+  const v2Offset = interpolate(frame, [v2Start, v2Start + 26], [-20, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
 
-  const headlineOpacity = interpolate(frame, [78, 100], [0, 1], {
+  const headlineProgress = interpolate(frame, [104, 132], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
   });
+  const headlineInsetRight = (1 - headlineProgress) * 100;
 
   // Pulse for the "Última actualización" highlight
   const pulse = 0.5 + 0.5 * Math.sin((frame - v2Start) * 0.3);
@@ -181,7 +186,7 @@ export const Scene6Handoff: React.FC = () => {
           color: palette.ink,
           textAlign: 'center',
           maxWidth: 760,
-          opacity: headlineOpacity,
+          clipPath: `inset(0 ${headlineInsetRight}% 0 0)`,
         }}
       >
         tu memoria sobrevive a la conversación.
