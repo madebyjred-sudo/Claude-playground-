@@ -2,8 +2,8 @@ import {Composition} from 'remotion';
 import {CortexLaunch} from './CortexLaunch';
 import {formats, fps} from './theme';
 
-// Total launch video: 35s @ 30fps = 1050 frames
-const DURATION_FRAMES = 35 * fps;
+// Total: 30s @ 30fps = 900 frames
+const DURATION_FRAMES = 30 * fps;
 
 export const Root: React.FC = () => {
   return (
