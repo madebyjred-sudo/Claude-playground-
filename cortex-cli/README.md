@@ -79,6 +79,10 @@ O pulsá `o` para abrir la carpeta y arrastrar los `.md` directo a la UI
 de tu IA (mejor para córtex grandes — algunas IAs parsean mejor archivos
 adjuntos que texto pegado).
 
+**Atajo si instalaste la [Skill de Cortex](./skills/cortex/):** ignorá
+el `PROMPT.md` y pegá solo el `CORTEX.md` — la skill ya le enseñó a tu
+IA cómo interpretarlo.
+
 ### 3 · Hacer crecer el córtex
 
 Tu IA va a proponer actualizaciones al final de cada conversación útil
@@ -133,6 +137,20 @@ Como vive en tu Drive, podés:
 - Compartir un córtex completo enviando link de carpeta.
 - Ver el historial de cómo creció.
 - Llevarte tus archivos a otro servicio cuando quieras.
+
+---
+
+## La Skill portable
+
+En [`skills/cortex/`](./skills/cortex/) hay una **skill** que enseña a
+cualquier IA cómo leer y hacer crecer un córtex:
+
+- **Con Claude:** se instala una sola vez en `~/.claude/skills/cortex/`
+  y se carga sola cuando pegás un CORTEX.
+- **Con ChatGPT / Gemini / otras:** abrís `SKILL.md`, lo pegás como
+  primer mensaje, después pegás tu CORTEX.
+
+Ver instrucciones detalladas en [`skills/cortex/README.md`](./skills/cortex/README.md).
 
 ---
 
