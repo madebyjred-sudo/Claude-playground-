@@ -9,6 +9,7 @@ import {Scene3Restart} from './scenes/Scene3Restart';
 import {Scene4Objection} from './scenes/Scene4Objection';
 import {Scene5PassiveMemory} from './scenes/Scene5PassiveMemory';
 import {Scene6Pivot} from './scenes/Scene6Pivot';
+import {Scene6bNameReveal} from './scenes/Scene6bNameReveal';
 import {Scene7Layers} from './scenes/Scene7Layers';
 import {Scene8Handoff} from './scenes/Scene8Handoff';
 import {Scene9Closer} from './scenes/Scene9Closer';
@@ -31,16 +32,17 @@ import {buildFontFaceCSS} from './fonts';
  *   09  6.7s    1.5s     8.2s  (longer hold for URL)
  */
 const D = {
-  s0: 11.6,  // viral hook · "Todos saben que la IA necesita contexto…"
-  s1: 7.5,   // multi-chat establish (1.5s) + focused loop with audio (6s)
-  s2: 3.2,
-  s3: 2.9,
-  s4: 3.0,
-  s5: 7.3,
-  s6: 9.3,
-  s7: 10.7,
-  s8: 8.7,
-  s9: 8.2,
+  s0: 11.6,  // viral hook
+  s1: 7.5,   // multi-chat establish + focused loop
+  s2: 3.2,   // amnesia
+  s3: 2.9,   // restart loop
+  s4: 3.0,   // objection
+  s5: 7.3,   // passive memory
+  s6: 9.3,   // pivot · "un cuaderno propio"
+  s6b: 7.8,  // NAME REVEAL · "Le pusimos un nombre. Cortex."
+  s7: 10.7,  // layers (now AFTER we've named it)
+  s8: 8.7,   // handoff
+  s9: 10.5,  // closer · extended hold so URL has time to read
 } as const;
 
 const f = (s: number) => Math.round(s * fps);
@@ -63,35 +65,41 @@ export const CortexLaunch: React.FC = () => {
       />
 
       <Series>
+        {/* Each scene gets a distinct camera variant — no two consecutive
+            transitions feel identical. The mix reads as varied camera
+            language across a virtual canvas. */}
         <Series.Sequence durationInFrames={f(D.s0)}>
-          <SceneFrame durationFrames={f(D.s0)}><Scene0Hook /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s0)} variant="zoom-in"><Scene0Hook /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s1)}>
-          <SceneFrame durationFrames={f(D.s1)}><Scene1HookLoop /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s1)} variant="pan-right"><Scene1HookLoop /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s2)}>
-          <SceneFrame durationFrames={f(D.s2)}><Scene2Amnesia /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s2)} variant="tilt-down"><Scene2Amnesia /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s3)}>
-          <SceneFrame durationFrames={f(D.s3)}><Scene3Restart /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s3)} variant="pan-left"><Scene3Restart /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s4)}>
-          <SceneFrame durationFrames={f(D.s4)}><Scene4Objection /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s4)} variant="zoom-in"><Scene4Objection /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s5)}>
-          <SceneFrame durationFrames={f(D.s5)}><Scene5PassiveMemory /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s5)} variant="pan-right"><Scene5PassiveMemory /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s6)}>
-          <SceneFrame durationFrames={f(D.s6)}><Scene6Pivot /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s6)} variant="zoom-out"><Scene6Pivot /></SceneFrame>
+        </Series.Sequence>
+        <Series.Sequence durationInFrames={f(D.s6b)}>
+          <SceneFrame durationFrames={f(D.s6b)} variant="zoom-in"><Scene6bNameReveal /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s7)}>
-          <SceneFrame durationFrames={f(D.s7)}><Scene7Layers /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s7)} variant="tilt-down"><Scene7Layers /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s8)}>
-          <SceneFrame durationFrames={f(D.s8)}><Scene8Handoff /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s8)} variant="pan-left"><Scene8Handoff /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s9)}>
-          <SceneFrame durationFrames={f(D.s9)}><Scene9Closer /></SceneFrame>
+          <SceneFrame durationFrames={f(D.s9)} variant="zoom-out"><Scene9Closer /></SceneFrame>
         </Series.Sequence>
       </Series>
 
@@ -101,5 +109,5 @@ export const CortexLaunch: React.FC = () => {
 };
 
 export const TOTAL_DURATION_FRAMES = Math.round(
-  (D.s0 + D.s1 + D.s2 + D.s3 + D.s4 + D.s5 + D.s6 + D.s7 + D.s8 + D.s9) * fps,
+  (D.s0 + D.s1 + D.s2 + D.s3 + D.s4 + D.s5 + D.s6 + D.s6b + D.s7 + D.s8 + D.s9) * fps,
 );

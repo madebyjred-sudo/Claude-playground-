@@ -68,6 +68,9 @@ export const Scene5PassiveMemory: React.FC = () => {
     >
       <Audio src={staticFile('audio/scenes/05-passive-memory.mp3')} />
 
+      {/* push content below caption zone */}
+      <div style={{height: 80}} />
+
       {/* "Y sí." opener */}
       <div
         style={{

@@ -135,14 +135,14 @@ export const Scene8Handoff: React.FC = () => {
     >
       <Audio src={staticFile('audio/scenes/08-handoff.mp3')} />
 
-      {/* Logos arranged at the top */}
+      {/* Logos pushed lower so the caption at top has room */}
       <AILogo
         name="claude"
         color="#D97757"
         symbol="✱"
         opacity={claudeOpacity}
         x={200}
-        y={280}
+        y={380}
       />
       <AILogo
         name="chatgpt"
@@ -150,7 +150,7 @@ export const Scene8Handoff: React.FC = () => {
         symbol="❋"
         opacity={gptOpacity}
         x={480}
-        y={280}
+        y={380}
       />
       <AILogo
         name="gemini"
@@ -158,14 +158,14 @@ export const Scene8Handoff: React.FC = () => {
         symbol="✦"
         opacity={geminiOpacity}
         x={780}
-        y={280}
+        y={380}
       />
 
       {/* Command line above the file */}
       <div
         style={{
           position: 'absolute',
-          top: 460,
+          top: 540,
           left: 0,
           right: 0,
           textAlign: 'center',
@@ -191,7 +191,7 @@ export const Scene8Handoff: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          top: 540,
+          top: 620,
           left: '50%',
           transform: 'translateX(-50%)',
           width: 560,

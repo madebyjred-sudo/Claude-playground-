@@ -65,7 +65,7 @@ export const Scene6Pivot: React.FC = () => {
       style={{
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: '180px 90px 80px',
+        padding: '300px 90px 80px',
         flexDirection: 'column',
         opacity: fadeIn * fadeOut,
       }}
