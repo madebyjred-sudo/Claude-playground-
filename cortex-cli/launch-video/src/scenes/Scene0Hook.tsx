@@ -1,7 +1,6 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
-import {Caption} from '../components/Caption';
 
 /**
  * SCENE 0 · viral hook (~11.5s · audio 00-hook.mp3)
@@ -141,10 +140,8 @@ export const Scene0Hook: React.FC = () => {
           letterSpacing: '-0.005em',
         }}
       >
-        y más si manejás varios frentes a la vez.
+        y más cuando manejás varios frentes en simultáneo.
       </div>
-
-      <Caption text="Todos saben que la IA necesita contexto. Pero nadie habla de lo cansón que es prepararlo cada vez. Y más si manejás varios frentes a la vez." />
     </AbsoluteFill>
   );
 };

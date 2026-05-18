@@ -1,7 +1,6 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
-import {Caption} from '../components/Caption';
 
 /**
  * SCENE 4 · objection (~3.0s · audio 04-objection.mp3)
@@ -125,7 +124,6 @@ export const Scene4Objection: React.FC = () => {
         »
       </div>
 
-      <Caption text="Y tú me dirás: «pero mi IA me recuerda»." />
     </AbsoluteFill>
   );
 };

@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Series, staticFile} from 'remotion';
 import {PaperBackground} from './components/PaperBackground';
 import {Header} from './components/Header';
+import {SceneFrame} from './components/SceneFrame';
 import {Scene0Hook} from './scenes/Scene0Hook';
 import {Scene1HookLoop} from './scenes/Scene1HookLoop';
 import {Scene2Amnesia} from './scenes/Scene2Amnesia';
@@ -63,34 +64,34 @@ export const CortexLaunch: React.FC = () => {
 
       <Series>
         <Series.Sequence durationInFrames={f(D.s0)}>
-          <Scene0Hook />
+          <SceneFrame durationFrames={f(D.s0)}><Scene0Hook /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s1)}>
-          <Scene1HookLoop />
+          <SceneFrame durationFrames={f(D.s1)}><Scene1HookLoop /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s2)}>
-          <Scene2Amnesia />
+          <SceneFrame durationFrames={f(D.s2)}><Scene2Amnesia /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s3)}>
-          <Scene3Restart />
+          <SceneFrame durationFrames={f(D.s3)}><Scene3Restart /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s4)}>
-          <Scene4Objection />
+          <SceneFrame durationFrames={f(D.s4)}><Scene4Objection /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s5)}>
-          <Scene5PassiveMemory />
+          <SceneFrame durationFrames={f(D.s5)}><Scene5PassiveMemory /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s6)}>
-          <Scene6Pivot />
+          <SceneFrame durationFrames={f(D.s6)}><Scene6Pivot /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s7)}>
-          <Scene7Layers />
+          <SceneFrame durationFrames={f(D.s7)}><Scene7Layers /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s8)}>
-          <Scene8Handoff />
+          <SceneFrame durationFrames={f(D.s8)}><Scene8Handoff /></SceneFrame>
         </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s9)}>
-          <Scene9Closer />
+          <SceneFrame durationFrames={f(D.s9)}><Scene9Closer /></SceneFrame>
         </Series.Sequence>
       </Series>
 

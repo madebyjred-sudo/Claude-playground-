@@ -1,20 +1,25 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
-import {Caption} from '../components/Caption';
 
 /**
  * SCENE 7 · cinco capas (10.7s · audio 07-layers.mp3)
  *
- * Organic ASCII brain (drawn with ↑ characters) centered on the
- * canvas. Five layer labels orbit around it in their own positions.
- * Each label appears + pulses when the voice names it; the brain
- * itself breathes continuously.
+ * Audio cadence (measured from the actual clip, voice says each
+ * layer ~2.0-2.2s apart):
+ *   Sinapsis        ~0.0s → frame 0
+ *   Hipocampo       ~2.2s → frame 66
+ *   Conexiones      ~4.5s → frame 135
+ *   Abiertas        ~6.7s → frame 201
+ *   Notas propias   ~8.7s → frame 261
+ *
+ * Layers now appear in the order the voice names them, with each
+ * label timed precisely to its spoken moment. Below each name +
+ * "para qué" line is a tighter benefit one-liner so the viewer
+ * understands NOT just what the layer is for but what they GET
+ * by having it.
  */
 
-// Custom ASCII brain provided by Juan — organic, made of upward-arrow
-// strokes that read as neural fibers / sulci. Trimmed leading and
-// trailing empty rows from the source for tighter framing.
 const BRAIN = `                                       ↑↑↑↑
                               ↑↑↑↑↑↑↑↑    ↑↑    ↑↑  ↑↑↑↑
                         ↑↑ ↑↑   ↑↑ ↑↑   ↑↑   ↑↑↑↑   ↑    ↑↑
@@ -55,67 +60,72 @@ const BRAIN = `                                       ↑↑↑↑
 type Layer = {
   label: string;
   meaning: string;
+  benefit: string;
   framePeak: number;
   position: React.CSSProperties;
   align: 'left' | 'right' | 'center';
 };
 
+// Order matches what the voice actually says in the audio clip.
 const LAYERS: Layer[] = [
   {
     label: 'SINAPSIS',
     meaning: 'para los conceptos',
+    benefit: 'encontrás tu pensamiento sin perderlo.',
     framePeak: 0,
     align: 'center',
     position: {top: 120, left: '50%', transform: 'translateX(-50%)'},
   },
   {
-    label: 'ABIERTAS',
-    meaning: 'para las preguntas',
-    framePeak: 60,
-    align: 'left',
-    position: {top: 300, left: 60},
-  },
-  {
     label: 'HIPOCAMPO',
     meaning: 'para los hechos',
-    framePeak: 120,
+    benefit: 'no repetís lo que ya sabés.',
+    framePeak: 66,
     align: 'right',
     position: {top: 300, right: 60},
   },
   {
     label: 'CONEXIONES',
     meaning: 'para las relaciones',
-    framePeak: 180,
+    benefit: 'ves cómo encajan tus ideas.',
+    framePeak: 135,
     align: 'left',
-    position: {bottom: 280, left: 80},
+    position: {top: 300, left: 60},
+  },
+  {
+    label: 'ABIERTAS',
+    meaning: 'para las preguntas',
+    benefit: 'no perdés lo que falta resolver.',
+    framePeak: 201,
+    align: 'right',
+    position: {bottom: 260, right: 80},
   },
   {
     label: 'NOTAS PROPIAS',
     meaning: 'para lo que pensás vos',
-    framePeak: 240,
-    align: 'right',
-    position: {bottom: 280, right: 80},
+    benefit: 'tu interpretación, separada del hecho.',
+    framePeak: 261,
+    align: 'left',
+    position: {bottom: 260, left: 80},
   },
 ];
 
 const Label: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
-  const appear = interpolate(
-    frame,
-    [layer.framePeak, layer.framePeak + 22],
-    [0, 1],
-    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)},
-  );
+  const appear = interpolate(frame, [layer.framePeak, layer.framePeak + 18], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
 
   const isActive = frame >= layer.framePeak && frame < layer.framePeak + 55;
   const pulse = isActive ? 1 + Math.sin((frame - layer.framePeak) * 0.32) * 0.05 : 1;
   const accentBoost = isActive
     ? 1
-    : interpolate(frame, [layer.framePeak + 30, layer.framePeak + 75], [1, 0.7], {
+    : interpolate(frame, [layer.framePeak + 30, layer.framePeak + 75], [1, 0.78], {
         extrapolateLeft: 'clamp',
         extrapolateRight: 'clamp',
       });
 
-  // Slide direction depends on side
   let dx = 0;
   let dy = 0;
   if (layer.align === 'left') dx = -28;
@@ -124,10 +134,17 @@ const Label: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
   const tx = (1 - appear) * dx;
   const ty = (1 - appear) * dy;
 
-  // Combine the base position with the slide-in transform
   const baseTransform =
     typeof layer.position.transform === 'string' ? layer.position.transform : '';
   const finalTransform = `${baseTransform} translate(${tx}px, ${ty}px) scale(${pulse})`.trim();
+
+  // Benefit subtitle appears slightly after the label
+  const benefitOpacity = interpolate(
+    frame,
+    [layer.framePeak + 14, layer.framePeak + 30],
+    [0, 1],
+    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)},
+  );
 
   return (
     <div
@@ -156,16 +173,30 @@ const Label: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
       <div
         style={{
           fontFamily: fontFamily.sans,
-          fontSize: 16,
+          fontSize: 15,
           fontWeight: 500,
           color: palette.text,
           fontStyle: 'italic',
-          marginTop: 8,
+          marginTop: 6,
           opacity: 0.72,
-          letterSpacing: '0.01em',
         }}
       >
         · {layer.meaning}
+      </div>
+      <div
+        style={{
+          fontFamily: fontFamily.sans,
+          fontSize: 14,
+          fontWeight: 600,
+          color: palette.ink,
+          marginTop: 8,
+          opacity: benefitOpacity * 0.88,
+          maxWidth: 240,
+          lineHeight: 1.35,
+          letterSpacing: '0.01em',
+        }}
+      >
+        {layer.benefit}
       </div>
     </div>
   );
@@ -196,7 +227,6 @@ export const Scene7Layers: React.FC = () => {
     <AbsoluteFill style={{opacity: fadeIn * fadeOut}}>
       <Audio src={staticFile('audio/scenes/07-layers.mp3')} />
 
-      {/* ASCII brain centered with subtle breath */}
       <div
         style={{
           position: 'absolute',
@@ -224,12 +254,9 @@ export const Scene7Layers: React.FC = () => {
         </pre>
       </div>
 
-      {/* Five layer labels positioned around the brain */}
       {LAYERS.map((layer) => (
         <Label key={layer.label} layer={layer} frame={frame} />
       ))}
-
-      <Caption text="Sinapsis · Hipocampo · Conexiones · Abiertas · Notas propias." />
     </AbsoluteFill>
   );
 };
