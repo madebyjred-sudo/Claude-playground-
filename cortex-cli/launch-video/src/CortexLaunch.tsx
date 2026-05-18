@@ -1,4 +1,4 @@
-import {AbsoluteFill, Series} from 'remotion';
+import {AbsoluteFill, Audio, Series, staticFile} from 'remotion';
 import {PaperBackground} from './components/PaperBackground';
 import {Header} from './components/Header';
 import {Scene1HookLoop} from './scenes/Scene1HookLoop';
@@ -50,6 +50,14 @@ export const CortexLaunch: React.FC = () => {
       <style>{FONT_CSS}</style>
 
       <PaperBackground />
+
+      {/* Bass loop · Latin · subtle bed under the narration.
+          Loops a ~22s sound-generation clip to cover the 59s video. */}
+      <Audio
+        src={staticFile('audio/music/bass.mp3')}
+        volume={0.16}
+        loop
+      />
 
       <Series>
         <Series.Sequence durationInFrames={f(D.s1)}>

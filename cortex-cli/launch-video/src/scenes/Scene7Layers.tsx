@@ -6,56 +6,116 @@ import {Caption} from '../components/Caption';
 /**
  * SCENE 7 · cinco capas (10.7s · audio 07-layers.mp3)
  *
- * ASCII brain centered. Each of the five layers lives in its own
- * position around the brain, with a "para qué" subtitle below the
- * label. Labels appear staggered to the voice naming each — pulsing
- * on activation, settling into place.
- *
- * Audio cadence (rough, voice says each layer ~2s apart):
- *   Sinapsis     ~0.0s → frame 0
- *   Hipocampo    ~2.0s → frame 60
- *   Conexiones   ~4.0s → frame 120
- *   Abiertas     ~6.0s → frame 180
- *   Notas        ~8.0s → frame 240
+ * Organic ASCII brain (drawn with ↑ characters) centered on the
+ * canvas. Five layer labels orbit around it in their own positions.
+ * Each label appears + pulses when the voice names it; the brain
+ * itself breathes continuously.
  */
 
-const BRAIN = `       _.._.._.._
-     ,'  )( )(  ',
-    /  ((  ()  ))  \\
-   |  (  ()()()  )  |
-   |   \\\\  __  //   |
-    \\   '-\\__/-'   /
-     '._  ||  _,'
-        '-||-'
-          ||
-         ====`;
+// Custom ASCII brain provided by Juan — organic, made of upward-arrow
+// strokes that read as neural fibers / sulci. Trimmed leading and
+// trailing empty rows from the source for tighter framing.
+const BRAIN = `                                       ↑↑↑↑
+                              ↑↑↑↑↑↑↑↑    ↑↑    ↑↑  ↑↑↑↑
+                        ↑↑ ↑↑   ↑↑ ↑↑   ↑↑   ↑↑↑↑   ↑    ↑↑
+                    ↑↑↑↑↑      ↑  ↑↑  ↑    ↑         ↑      ↑↑↑
+                  ↑  ↑↑       ↑     ↑↑  ↑↑↑    ↑↑↑   ↑↑    ↑   ↑
+              ↑↑↑↑ ↑↑      ↑↑      ↑      ↑    ↑↑    ↑     ↑    ↑↑
+            ↑↑  ↑↑     ↑↑↑↑↑   ↑   ↑                 ↑↑       ↑   ↑
+          ↑↑↑  ↑    ↑      ↑    ↑↑  ↑↑    ↑   ↑↑    ↑ ↑       ↑ ↑  ↑↑
+         ↑↑↑  ↑   ↑  ↑↑  ↑↑↑    ↑      ↑      ↑   ↑ ↑ ↑     ↑↑       ↑
+       ↑ ↑↑↑     ↑    ↑  ↑↑↑↑   ↑    ↑   ↑↑   ↑      ↑↑    ↑ ↑   ↑↑↑ ↑
+      ↑ ↑ ↑↑↑↑↑ ↑     ↑  ↑ ↑↑   ↑     ↑  ↑    ↑     ↑   ↑  ↑        ↑↑ ↑
+     ↑   ↑ ↑    ↑     ↑  ↑ ↑↑   ↑   ↑↑↑    ↑↑↑↑↑↑  ↑     ↑↑       ↑     ↑
+    ↑↑ ↑↑↑  ↑  ↑      ↑   ↑↑  ↑ ↑↑  ↑↑↑↑↑↑         ↑          ↑↑   ↑↑↑  ↑↑
+    ↑ ↑  ↑     ↑  ↑  ↑↑↑    ↑   ↑↑↑          ↑     ↑   ↑↑ ↑↑ ↑    ↑  ↑ ↑  ↑
+    ↑↑↑   ↑            ↑↑↑     ↑↑           ↑↑  ↑  ↑  ↑↑     ↑  ↑   ↑ ↑ ↑ ↑
+    ↑↑ ↑    ↑↑           ↑↑↑↑↑↑↑     ↑     ↑ ↑     ↑↑↑    ↑  ↑↑↑↑   ↑↑ ↑  ↑
+    ↑↑   ↑↑↑   ↑↑↑   ↑↑ ↑      ↑    ↑↑↑↑ ↑↑  ↑            ↑     ↑        ↑ ↑
+    ↑↑↑↑       ↑  ↑↑   ↑     ↑    ↑↑      ↑↑   ↑    ↑↑    ↑  ↑  ↑    ↑ ↑  ↑↑
+      ↑↑ ↑         ↑↑ ↑    ↑  ↑↑↑↑           ↑↑↑↑↑     ↑↑↑      ↑    ↑     ↑
+       ↑  ↑     ↑↑↑↑↑↑    ↑↑↑                    ↑         ↑  ↑↑ ↑↑   ↑↑   ↑
+         ↑    ↑   ↑ ↑      ↑           ↑      ↑↑↑  ↑↑↑    ↑↑↑   ↑       ↑  ↑
+            ↑↑↑↑   ↑↑    ↑   ↑↑  ↑ ↑  ↑      ↑       ↑↑↑ ↑↑↑↑↑↑↑  ↑↑↑↑↑↑
+                   ↑↑↑ ↑ ↑        ↑     ↑↑↑     ↑↑↑↑↑↑↑↑ ↑   ↑↑     ↑↑↑
+                   ↑             ↑         ↑↑↑↑↑↑↑ ↑↑↑↑↑ ↑↑  ↑↑↑↑↑↑↑↑↑ ↑
+                    ↑ ↑      ↑  ↑     ↑↑↑↑    ↑↑↑ ↑↑↑↑↑↑ ↑↑↑↑↑    ↑↑↑↑↑↑
+                     ↑             ↑↑↑↑ ↑↑     ↑↑↑↑↑↑↑↑↑↑↑↑ ↑↑↑       ↑↑
+                      ↑↑↑↑↑↑    ↑↑       ↑↑↑ ↑↑↑ ↑ ↑ ↑ ↑↑↑↑ ↑↑↑     ↑↑↑
+                             ↑               ↑   ↑ ↑ ↑ ↑↑ ↑  ↑↑↑  ↑↑↑↑
+                                              ↑↑   ↑↑↑ ↑  ↑↑ ↑↑  ↑↑↑
+                                                ↑↑   ↑↑↑↑↑↑↑↑↑↑↑↑
+                                                  ↑    ↑↑↑↑↑↑↑
+                                                   ↑   ↑
+                                                   ↑↑  ↑
+                                                    ↑   ↑
+                                                     ↑  ↑
+                                                     ↑↑↑`;
 
 type Layer = {
   label: string;
   meaning: string;
   framePeak: number;
-  top: string;
-  left?: string;
-  right?: string;
+  position: React.CSSProperties;
   align: 'left' | 'right' | 'center';
 };
 
 const LAYERS: Layer[] = [
-  {label: 'SINAPSIS',      meaning: 'para los conceptos',     framePeak: 0,   top: '14%', left:  '50%', align: 'center'},
-  {label: 'HIPOCAMPO',     meaning: 'para los hechos',        framePeak: 60,  top: '48%', right: '6%',  align: 'right'},
-  {label: 'CONEXIONES',    meaning: 'para las relaciones',    framePeak: 120, top: '70%', right: '12%', align: 'right'},
-  {label: 'ABIERTAS',      meaning: 'para las preguntas',     framePeak: 180, top: '48%', left:  '6%',  align: 'left'},
-  {label: 'NOTAS PROPIAS', meaning: 'para lo que pensás vos', framePeak: 240, top: '70%', left:  '12%', align: 'left'},
+  {
+    label: 'SINAPSIS',
+    meaning: 'para los conceptos',
+    framePeak: 0,
+    align: 'center',
+    position: {top: 120, left: '50%', transform: 'translateX(-50%)'},
+  },
+  {
+    label: 'ABIERTAS',
+    meaning: 'para las preguntas',
+    framePeak: 60,
+    align: 'left',
+    position: {top: 300, left: 60},
+  },
+  {
+    label: 'HIPOCAMPO',
+    meaning: 'para los hechos',
+    framePeak: 120,
+    align: 'right',
+    position: {top: 300, right: 60},
+  },
+  {
+    label: 'CONEXIONES',
+    meaning: 'para las relaciones',
+    framePeak: 180,
+    align: 'left',
+    position: {bottom: 280, left: 80},
+  },
+  {
+    label: 'NOTAS PROPIAS',
+    meaning: 'para lo que pensás vos',
+    framePeak: 240,
+    align: 'right',
+    position: {bottom: 280, right: 80},
+  },
 ];
 
 const Label: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
   const appear = interpolate(
     frame,
-    [layer.framePeak, layer.framePeak + 18],
+    [layer.framePeak, layer.framePeak + 22],
     [0, 1],
     {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)},
   );
 
+  const isActive = frame >= layer.framePeak && frame < layer.framePeak + 55;
+  const pulse = isActive ? 1 + Math.sin((frame - layer.framePeak) * 0.32) * 0.05 : 1;
+  const accentBoost = isActive
+    ? 1
+    : interpolate(frame, [layer.framePeak + 30, layer.framePeak + 75], [1, 0.7], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      });
+
+  // Slide direction depends on side
   let dx = 0;
   let dy = 0;
   if (layer.align === 'left') dx = -28;
@@ -64,40 +124,27 @@ const Label: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
   const tx = (1 - appear) * dx;
   const ty = (1 - appear) * dy;
 
-  const isActive = frame >= layer.framePeak && frame < layer.framePeak + 50;
-  const pulse = isActive ? 1 + Math.sin((frame - layer.framePeak) * 0.35) * 0.06 : 1;
-  const accentBoost = isActive
-    ? 1
-    : interpolate(frame, [layer.framePeak + 30, layer.framePeak + 70], [1, 0.78], {
-        extrapolateLeft: 'clamp',
-        extrapolateRight: 'clamp',
-      });
-
+  // Combine the base position with the slide-in transform
   const baseTransform =
-    layer.align === 'center'
-      ? `translate(-50%, ${ty}px) scale(${pulse})`
-      : `translate(${tx}px, ${ty}px) scale(${pulse})`;
-
-  const posStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: layer.top,
-    textAlign: layer.align,
-    opacity: appear,
-    transform: baseTransform,
-    transformOrigin:
-      layer.align === 'left' ? 'left center' : layer.align === 'right' ? 'right center' : 'center',
-  };
-  if (layer.left) posStyle.left = layer.left;
-  if (layer.right) posStyle.right = layer.right;
+    typeof layer.position.transform === 'string' ? layer.position.transform : '';
+  const finalTransform = `${baseTransform} translate(${tx}px, ${ty}px) scale(${pulse})`.trim();
 
   return (
-    <div style={posStyle}>
+    <div
+      style={{
+        position: 'absolute',
+        ...layer.position,
+        transform: finalTransform,
+        textAlign: layer.align,
+        opacity: appear,
+      }}
+    >
       <div
         style={{
           fontFamily: fontFamily.sans,
-          fontSize: 24,
+          fontSize: 22,
           fontWeight: 700,
-          letterSpacing: '0.20em',
+          letterSpacing: '0.22em',
           color: palette.accent,
           opacity: accentBoost,
           textTransform: 'uppercase',
@@ -109,12 +156,13 @@ const Label: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
       <div
         style={{
           fontFamily: fontFamily.sans,
-          fontSize: 17,
+          fontSize: 16,
           fontWeight: 500,
           color: palette.text,
           fontStyle: 'italic',
-          marginTop: 6,
-          opacity: 0.78,
+          marginTop: 8,
+          opacity: 0.72,
+          letterSpacing: '0.01em',
         }}
       >
         · {layer.meaning}
@@ -137,9 +185,8 @@ export const Scene7Layers: React.FC = () => {
     easing: Easing.in(Easing.cubic),
   });
 
-  // Brain breathes — continuous gentle pulse
-  const brainPulse = 1 + Math.sin(frame * 0.08) * 0.02;
-  const brainFadeIn = interpolate(frame, [0, 24], [0, 1], {
+  const brainPulse = 1 + Math.sin(frame * 0.07) * 0.015;
+  const brainFadeIn = interpolate(frame, [0, 28], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
@@ -149,7 +196,7 @@ export const Scene7Layers: React.FC = () => {
     <AbsoluteFill style={{opacity: fadeIn * fadeOut}}>
       <Audio src={staticFile('audio/scenes/07-layers.mp3')} />
 
-      {/* ASCII brain centered */}
+      {/* ASCII brain centered with subtle breath */}
       <div
         style={{
           position: 'absolute',
@@ -163,13 +210,14 @@ export const Scene7Layers: React.FC = () => {
         <pre
           style={{
             fontFamily: fontFamily.mono,
-            fontSize: 22,
+            fontSize: 10,
             fontWeight: 500,
             lineHeight: 1.0,
             color: palette.ink,
             margin: 0,
             textAlign: 'left',
             whiteSpace: 'pre',
+            letterSpacing: '-0.02em',
           }}
         >
           {BRAIN}
