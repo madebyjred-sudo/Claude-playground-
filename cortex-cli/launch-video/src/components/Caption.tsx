@@ -3,13 +3,13 @@ import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
 /**
- * Persistent closed-caption at the bottom of every scene. Renders
- * what the voice is saying. Small Figtree, ink with reduced opacity
- * so it never fights the main visual.
+ * Persistent closed-caption. Full opacity, Figtree 18px, sits ~110px
+ * from the bottom so it doesn't compete with the safe-zone of social
+ * feeds while staying clearly readable.
  */
 export const Caption: React.FC<{text: string}> = ({text}) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [4, 14], [0, 0.65], {
+  const opacity = interpolate(frame, [4, 14], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
@@ -18,17 +18,17 @@ export const Caption: React.FC<{text: string}> = ({text}) => {
     <div
       style={{
         position: 'absolute',
-        bottom: 56,
+        bottom: 110,
         left: 90,
         right: 90,
         textAlign: 'center',
         fontFamily: fontFamily.sans,
-        fontSize: 16,
-        fontWeight: 500,
+        fontSize: 18,
+        fontWeight: 600,
         color: palette.ink,
         opacity,
         letterSpacing: '0.01em',
-        lineHeight: 1.45,
+        lineHeight: 1.4,
         maxWidth: 900,
         margin: '0 auto',
         pointerEvents: 'none',
