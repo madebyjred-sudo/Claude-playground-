@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Series, staticFile} from 'remotion';
 import {PaperBackground} from './components/PaperBackground';
 import {Header} from './components/Header';
+import {Scene0Hook} from './scenes/Scene0Hook';
 import {Scene1HookLoop} from './scenes/Scene1HookLoop';
 import {Scene2Amnesia} from './scenes/Scene2Amnesia';
 import {Scene3Restart} from './scenes/Scene3Restart';
@@ -29,11 +30,12 @@ import {buildFontFaceCSS} from './fonts';
  *   09  6.7s    1.5s     8.2s  (longer hold for URL)
  */
 const D = {
-  s1: 6.0,
+  s0: 11.6,  // viral hook · "Todos saben que la IA necesita contexto…"
+  s1: 7.5,   // multi-chat establish (1.5s) + focused loop with audio (6s)
   s2: 3.2,
   s3: 2.9,
-  s4: 3.0,   // grew to fit "Y tú me dirás…" setup
-  s5: 7.3,   // shrunk slightly with new tighter phrasing
+  s4: 3.0,
+  s5: 7.3,
   s6: 9.3,
   s7: 10.7,
   s8: 8.7,
@@ -60,6 +62,9 @@ export const CortexLaunch: React.FC = () => {
       />
 
       <Series>
+        <Series.Sequence durationInFrames={f(D.s0)}>
+          <Scene0Hook />
+        </Series.Sequence>
         <Series.Sequence durationInFrames={f(D.s1)}>
           <Scene1HookLoop />
         </Series.Sequence>
@@ -95,5 +100,5 @@ export const CortexLaunch: React.FC = () => {
 };
 
 export const TOTAL_DURATION_FRAMES = Math.round(
-  (D.s1 + D.s2 + D.s3 + D.s4 + D.s5 + D.s6 + D.s7 + D.s8 + D.s9) * fps,
+  (D.s0 + D.s1 + D.s2 + D.s3 + D.s4 + D.s5 + D.s6 + D.s7 + D.s8 + D.s9) * fps,
 );
