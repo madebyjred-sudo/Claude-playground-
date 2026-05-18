@@ -1,4 +1,4 @@
-import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
@@ -12,34 +12,44 @@ const WORDMARK_LINES = [
 ];
 
 /**
- * SCENE 7 · closer (26–30s · 120 frames local)
+ * SCENE 9 · closer (8.2s · audio 09-closer.mp3)
  *
- * Wordmark returns smaller. Tagline. URL. Bars pattern draws across.
+ * The reveal moment. The CORTEX ASCII wordmark draws in line by
+ * line (the animation the user loved from the first iteration).
+ * Tagline + URL + bars pattern. Holds at the end.
  */
-export const Scene7Closer: React.FC = () => {
+export const Scene9Closer: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const wordmarkOpacity = interpolate(frame, [0, 22], [0, 1], {
+  const fadeIn = interpolate(frame, [0, 14], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
+  // No fade out for the closer — let it hold to the very end
+  const fadeOut = 1;
 
-  const taglineProgress = interpolate(frame, [16, 48], [0, 1], {
+  // The wordmark draws line by line
+  const PER_LINE_START = 8;
+  const PER_LINE_DURATION = 18;
+
+  // Tagline appears after wordmark is mostly drawn
+  const taglineProgress = interpolate(frame, [80, 130], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
   const taglineInsetRight = (1 - taglineProgress) * 100;
 
-  const urlOpacity = interpolate(frame, [44, 66], [0, 1], {
+  // URL appears after tagline
+  const urlOpacity = interpolate(frame, [140, 175], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
 
-  // Bars pattern drawing left → right
-  const barsProgress = interpolate(frame, [56, 90], [0, 1], {
+  // Bars pattern decoration
+  const barsProgress = interpolate(frame, [170, 220], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
@@ -50,39 +60,60 @@ export const Scene7Closer: React.FC = () => {
       style={{
         alignItems: 'center',
         justifyContent: 'center',
+        padding: '160px 90px',
         flexDirection: 'column',
-        padding: '180px 90px',
+        opacity: fadeIn * fadeOut,
       }}
     >
+      <Audio src={staticFile('audio/scenes/09-closer.mp3')} />
+
+      {/* Wordmark drawing in line by line */}
       <div
         style={{
           fontFamily: fontFamily.mono,
-          fontSize: 11,
-          lineHeight: 1.05,
+          fontWeight: 500,
+          fontSize: 16,
+          lineHeight: 1.2,
           color: palette.ink,
           whiteSpace: 'pre',
-          opacity: wordmarkOpacity,
-          marginBottom: 80,
+          textAlign: 'left',
+          marginBottom: 56,
         }}
       >
-        {WORDMARK_LINES.join('\n')}
+        {WORDMARK_LINES.map((line, i) => {
+          const start = i * PER_LINE_START;
+          const end = start + PER_LINE_DURATION;
+          const progress = interpolate(frame, [start, end], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+            easing: Easing.out(Easing.cubic),
+          });
+          const insetRight = (1 - progress) * 100;
+          return (
+            <div key={i} style={{clipPath: `inset(0 ${insetRight}% 0 0)`}}>
+              {line}
+            </div>
+          );
+        })}
       </div>
 
+      {/* Tagline */}
       <div
         style={{
           fontFamily: fontFamily.blackletter,
-          fontSize: 72,
-          lineHeight: 1.1,
+          fontSize: 56,
+          lineHeight: 1.15,
           color: palette.ink,
           textAlign: 'center',
           maxWidth: 880,
-          marginBottom: 48,
           clipPath: `inset(0 ${taglineInsetRight}% 0 0)`,
+          marginBottom: 36,
         }}
       >
-        un protocolo. cinco capas. cualquier IA.
+        donde vive el conocimiento que sobrevive.
       </div>
 
+      {/* URL */}
       <div
         style={{
           fontFamily: fontFamily.mono,
@@ -91,25 +122,16 @@ export const Scene7Closer: React.FC = () => {
           color: palette.accent,
           letterSpacing: '0.02em',
           opacity: urlOpacity,
+          marginBottom: 40,
         }}
       >
         github.com/madebyjred-sudo/CORTEX-CLI
       </div>
 
-      {/* bars pattern decoration */}
-      <div
-        style={{
-          marginTop: 64,
-          display: 'flex',
-          gap: 12,
-          alignItems: 'center',
-        }}
-      >
+      {/* Bars pattern */}
+      <div style={{display: 'flex', gap: 12, alignItems: 'center'}}>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
-          const localProgress = Math.max(
-            0,
-            Math.min(1, barsProgress * 9 - i),
-          );
+          const localProgress = Math.max(0, Math.min(1, barsProgress * 9 - i));
           return (
             <div
               key={i}

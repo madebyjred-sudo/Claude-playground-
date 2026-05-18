@@ -1,71 +1,95 @@
-import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
 
 /**
- * SCENE 3 · pivot (6–9s · 90 frames local)
+ * SCENE 6 · pivot (9.3s · audio 06-pivot.mp3)
  *
- * Hard cut. Headline declares the solution. Below it, a paper sheet
- * materializes with the filename CORTEX-borges-aleph.md typed on top.
+ * "Lo que necesitás no es una IA mejor. Es un cuaderno propio.
+ *  Un archivo de texto, con cinco capas."
+ *
+ * Headline reveals → file materializes → layer labels start to show.
  */
-export const Scene3Pivot: React.FC = () => {
+export const Scene6Pivot: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const headlineProgress = interpolate(frame, [0, 26], [0, 1], {
+  const fadeIn = interpolate(frame, [0, 12], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
+  const fadeOut = interpolate(frame, [265, 279], [1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.in(Easing.cubic),
+  });
+
+  // Headline reveals
+  const headlineProgress = interpolate(frame, [4, 38], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
   const headlineInsetRight = (1 - headlineProgress) * 100;
 
-  const sheetScale = interpolate(frame, [22, 42], [0.92, 1], {
+  // Sheet materializes
+  const sheetOpacity = interpolate(frame, [70, 110], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
-  const sheetOpacity = interpolate(frame, [22, 42], [0, 1], {
+  const sheetScale = interpolate(frame, [70, 110], [0.94, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
 
-  const filename = 'CORTEX-borges-aleph.md';
-  const typeStart = 50;
-  const typePerChar = 1.6;
+  // Filename typewriter
+  const filename = 'CORTEX-mincyt.md';
+  const typeStart = 115;
   const typedChars = Math.max(
     0,
-    Math.min(filename.length, Math.floor((frame - typeStart) / typePerChar)),
+    Math.min(filename.length, Math.floor((frame - typeStart) * 1.4)),
   );
+
+  // Layer labels appear
+  const layersOpacity = interpolate(frame, [170, 210], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
 
   return (
     <AbsoluteFill
       style={{
         alignItems: 'center',
         justifyContent: 'flex-start',
+        padding: '180px 90px 80px',
         flexDirection: 'column',
-        padding: '180px 90px',
-        textAlign: 'center',
+        opacity: fadeIn * fadeOut,
       }}
     >
+      <Audio src={staticFile('audio/scenes/06-pivot.mp3')} />
+
       <div
         style={{
           fontFamily: fontFamily.blackletter,
-          fontSize: 128,
-          lineHeight: 1.0,
+          fontSize: 88,
+          lineHeight: 1.08,
           color: palette.ink,
-          maxWidth: 900,
+          textAlign: 'center',
+          maxWidth: 880,
           clipPath: `inset(0 ${headlineInsetRight}% 0 0)`,
+          marginBottom: 56,
         }}
       >
-        tu memoria es un archivo.
+        un cuaderno propio.
       </div>
 
-      {/* paper sheet */}
       <div
         style={{
-          marginTop: 80,
           width: 640,
-          minHeight: 420,
+          minHeight: 380,
           background: '#F5EBD0',
           border: `2px solid ${palette.ink}`,
           padding: '28px 36px',
@@ -81,7 +105,6 @@ export const Scene3Pivot: React.FC = () => {
             fontSize: 20,
             fontWeight: 600,
             color: palette.ink,
-            letterSpacing: '0',
             borderBottom: `1px solid ${palette.ink}33`,
             paddingBottom: 14,
             marginBottom: 18,
@@ -90,39 +113,40 @@ export const Scene3Pivot: React.FC = () => {
           # {filename.slice(0, typedChars)}
           <span
             style={{
-              opacity: frame % 20 < 10 ? 1 : 0,
+              opacity: frame % 22 < 11 ? 1 : 0,
               color: palette.accent,
             }}
           >
             ▌
           </span>
         </div>
-        {/* preview of the cortex structure that appears after the filename */}
         <div
           style={{
-            opacity: interpolate(frame, [82, 110], [0, 1], {
-              extrapolateLeft: 'clamp',
-              extrapolateRight: 'clamp',
-              easing: Easing.out(Easing.cubic),
-            }),
+            opacity: layersOpacity,
             display: 'flex',
             flexDirection: 'column',
             gap: 10,
           }}
         >
-          {['SINAPSIS · conceptos núcleo', 'HIPOCAMPO · memoria de hechos', 'CONEXIONES · cómo se relacionan', 'ABIERTAS · preguntas no resueltas', 'NOTAS PROPIAS · interpretaciones'].map((line, i) => (
+          {[
+            'SINAPSIS',
+            'HIPOCAMPO',
+            'CONEXIONES',
+            'ABIERTAS',
+            'NOTAS PROPIAS',
+          ].map((label) => (
             <div
-              key={i}
+              key={label}
               style={{
                 fontFamily: fontFamily.sans,
                 fontSize: 14,
                 fontWeight: 600,
-                letterSpacing: '0.18em',
+                letterSpacing: '0.22em',
                 color: palette.accent,
                 textTransform: 'uppercase',
               }}
             >
-              ## {line}
+              ## {label}
             </div>
           ))}
         </div>
