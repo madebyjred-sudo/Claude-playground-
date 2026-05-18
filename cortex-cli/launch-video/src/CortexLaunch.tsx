@@ -32,8 +32,8 @@ const D = {
   s1: 6.0,
   s2: 3.2,
   s3: 2.9,
-  s4: 2.0,
-  s5: 7.8,
+  s4: 3.0,   // grew to fit "Y tú me dirás…" setup
+  s5: 7.3,   // shrunk slightly with new tighter phrasing
   s6: 9.3,
   s7: 10.7,
   s8: 8.7,

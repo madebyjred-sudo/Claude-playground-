@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 const WORDMARK_LINES = [
   '     ___/\\/\\/\\/\\/\\____/\\/\\/\\/\\____/\\/\\/\\/\\/\\____/\\/\\/\\/\\/\\/\\__/\\/\\/\\/\\/\\/\\__/\\/\\____/\\/\\_',
@@ -147,6 +148,8 @@ export const Scene9Closer: React.FC = () => {
           );
         })}
       </div>
+
+      <Caption text="Cortex. Donde vive el conocimiento que sobrevive." />
     </AbsoluteFill>
   );
 };

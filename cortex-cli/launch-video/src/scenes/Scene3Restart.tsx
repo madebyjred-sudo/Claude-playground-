@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
  * SCENE 3 · restart (2.9s · audio 03-restart.mp3)
@@ -107,6 +108,8 @@ export const Scene3Restart: React.FC = () => {
       <Stub stamp="miércoles 10:14" opacity={op1} delay={4} />
       <Stub stamp="viernes 8:55" opacity={op2} delay={26} />
       <Stub stamp="lunes 11:08" opacity={op3} delay={48} />
+
+      <Caption text="Volvés a empezar. Y otra vez. Y otra." />
     </AbsoluteFill>
   );
 };

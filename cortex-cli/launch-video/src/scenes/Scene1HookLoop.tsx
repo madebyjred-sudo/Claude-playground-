@@ -1,34 +1,35 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
  * SCENE 1 · hook · loop (6.0s · audio 01-hook-loop.mp3)
  *
- * Visual: chat window with someone typing a long context.
- * Lines appear progressively, simulating building up explanation.
+ * Universal "explaining a project" content — generic enough that any
+ * professional viewing the video can substitute their own context.
  */
 
 const LINES = [
-  'Hola. Soy consultor en LATAM,',
-  'trabajo con clientes B2B,',
-  'el proyecto que tengo en curso es para Mincyt,',
-  'la estrategia de comunicación interna es...',
-  'la cultura de la organización es...',
-  'los stakeholders clave son...',
+  'Hola. Te explico el contexto.',
+  'El proyecto es para un cliente.',
+  'El objetivo principal es…',
+  'El plazo lo tenemos en dos semanas.',
+  'Los stakeholders son varios.',
+  'Las restricciones que tenemos son…',
 ];
 
 export const Scene1HookLoop: React.FC = () => {
   const frame = useCurrentFrame();
 
-  // Each line appears progressively. Spread over ~5s (150 frames).
-  const linesVisible = Math.floor(interpolate(frame, [10, 140], [0, LINES.length], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
-  }));
+  const linesVisible = Math.floor(
+    interpolate(frame, [10, 140], [0, LINES.length], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.out(Easing.cubic),
+    }),
+  );
 
-  // The current line being typed has a per-char reveal
   const currentLineIdx = Math.min(linesVisible, LINES.length - 1);
   const lineStartFrame = 10 + currentLineIdx * (130 / LINES.length);
   const currentLineProgress = interpolate(
@@ -38,7 +39,6 @@ export const Scene1HookLoop: React.FC = () => {
     {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)},
   );
 
-  // Fade out for transition to next scene
   const fadeOut = interpolate(frame, [165, 180], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -111,6 +111,8 @@ export const Scene1HookLoop: React.FC = () => {
           )}
         </div>
       </div>
+
+      <Caption text="Pasaste una hora explicándole tu proyecto a tu IA. Te escuchó. Te ayudó." />
     </AbsoluteFill>
   );
 };

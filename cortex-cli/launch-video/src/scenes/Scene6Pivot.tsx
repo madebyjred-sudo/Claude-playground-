@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
  * SCENE 6 · pivot (9.3s · audio 06-pivot.mp3)
@@ -151,6 +152,8 @@ export const Scene6Pivot: React.FC = () => {
           ))}
         </div>
       </div>
+
+      <Caption text="Lo que necesitás no es una IA mejor. Es un cuaderno propio. Un archivo de texto, con cinco capas." />
     </AbsoluteFill>
   );
 };

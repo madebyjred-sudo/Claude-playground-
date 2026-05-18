@@ -1,14 +1,17 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
- * SCENE 5 · passive memory (7.8s · audio 05-passive-memory.mp3)
+ * SCENE 5 · passive memory (~7.5s · audio 05-passive-memory.mp3)
  *
- * Differentiation: what current AI "memory" is vs what a project
- * needs. Two columns — left shows the kind of passive recall AIs do
- * (knows your name, your role), right shows the missing piece:
- * project consistency across sessions.
+ * "Y sí. Te guarda datos. Pero eso es memoria pasiva. No es la
+ *  consistencia de un proyecto, de principio a fin."
+ *
+ * Left panel: what AIs do (remember basic facts about you).
+ * Right panel: what they DON'T (project consistency across
+ * sessions). Right panel gets struck through to mark the gap.
  */
 export const Scene5PassiveMemory: React.FC = () => {
   const frame = useCurrentFrame();
@@ -24,22 +27,29 @@ export const Scene5PassiveMemory: React.FC = () => {
     easing: Easing.in(Easing.cubic),
   });
 
-  // Left column appears first (memoria pasiva)
-  const leftOpacity = interpolate(frame, [12, 40], [0, 1], {
+  // "Y sí" intro line lands first
+  const introOpacity = interpolate(frame, [4, 18], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
 
-  // Right column appears later when narration says "no es la consistencia"
-  const rightOpacity = interpolate(frame, [110, 145], [0, 1], {
+  // Left column appears (memoria pasiva — what they DO have)
+  const leftOpacity = interpolate(frame, [20, 50], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
 
-  // Strike-through line across right column (X mark) — appears at end
-  const strikeProgress = interpolate(frame, [160, 200], [0, 1], {
+  // Right column appears (consistencia — what they DON'T)
+  const rightOpacity = interpolate(frame, [100, 130], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
+
+  // X strike across the right column
+  const strikeProgress = interpolate(frame, [150, 190], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
@@ -52,14 +62,27 @@ export const Scene5PassiveMemory: React.FC = () => {
         justifyContent: 'center',
         padding: '0 60px',
         flexDirection: 'column',
-        gap: 32,
+        gap: 28,
         opacity: fadeIn * fadeOut,
       }}
     >
       <Audio src={staticFile('audio/scenes/05-passive-memory.mp3')} />
 
+      {/* "Y sí." opener */}
+      <div
+        style={{
+          fontFamily: fontFamily.blackletter,
+          fontSize: 56,
+          color: palette.ink,
+          opacity: introOpacity,
+          marginBottom: 4,
+        }}
+      >
+        y sí…
+      </div>
+
       <div style={{display: 'flex', gap: 24, width: '100%', justifyContent: 'center'}}>
-        {/* LEFT · memoria pasiva (what current AIs do) */}
+        {/* LEFT · what passive memory does */}
         <div
           style={{
             width: 440,
@@ -90,13 +113,13 @@ export const Scene5PassiveMemory: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            <div>"Hola Juan."</div>
-            <div>"Sé que sos consultor."</div>
-            <div>"Sé que vivís en Colombia."</div>
+            <div>"sé tu nombre."</div>
+            <div>"sé a qué te dedicás."</div>
+            <div>"sé de qué hablamos ayer."</div>
           </div>
         </div>
 
-        {/* RIGHT · consistencia de proyecto (what's missing) */}
+        {/* RIGHT · what's missing */}
         <div
           style={{
             width: 440,
@@ -133,7 +156,6 @@ export const Scene5PassiveMemory: React.FC = () => {
             <div>contexto que viaja</div>
             <div>de principio a fin</div>
           </div>
-          {/* X strike-through */}
           <div
             style={{
               position: 'absolute',
@@ -149,11 +171,10 @@ export const Scene5PassiveMemory: React.FC = () => {
         </div>
       </div>
 
-      {/* Closing line */}
       <div
         style={{
           fontFamily: fontFamily.blackletter,
-          fontSize: 44,
+          fontSize: 40,
           color: palette.ink,
           textAlign: 'center',
           maxWidth: 820,
@@ -162,11 +183,13 @@ export const Scene5PassiveMemory: React.FC = () => {
             extrapolateRight: 'clamp',
             easing: Easing.out(Easing.cubic),
           }),
-          marginTop: 24,
+          marginTop: 12,
         }}
       >
         no es lo mismo.
       </div>
+
+      <Caption text="Y sí. Te guarda datos. Pero eso es memoria pasiva. No es la consistencia de un proyecto." />
     </AbsoluteFill>
   );
 };

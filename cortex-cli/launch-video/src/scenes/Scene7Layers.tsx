@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
  * SCENE 7 · five layers (10.7s · audio 07-layers.mp3)
@@ -148,6 +149,8 @@ export const Scene7Layers: React.FC = () => {
           );
         })}
       </div>
+
+      <Caption text="Sinapsis. Hipocampo. Conexiones. Abiertas. Notas propias." />
     </AbsoluteFill>
   );
 };

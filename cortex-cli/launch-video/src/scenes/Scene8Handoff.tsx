@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
  * SCENE 8 · handoff (8.7s · audio 08-handoff.mp3)
@@ -262,7 +263,7 @@ export const Scene8Handoff: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          bottom: 160,
+          bottom: 180,
           left: 0,
           right: 0,
           textAlign: 'center',
@@ -276,6 +277,8 @@ export const Scene8Handoff: React.FC = () => {
       >
         mañana seguís donde quedaste.
       </div>
+
+      <Caption text="Cualquier IA lo lee. Cuando terminás, te devuelve la versión actualizada." />
     </AbsoluteFill>
   );
 };

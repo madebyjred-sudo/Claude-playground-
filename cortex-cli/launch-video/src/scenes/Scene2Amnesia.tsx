@@ -1,6 +1,7 @@
 import {AbsoluteFill, Audio, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
+import {Caption} from '../components/Caption';
 
 /**
  * SCENE 2 · amnesia (3.2s · audio 02-amnesia.mp3)
@@ -103,6 +104,8 @@ export const Scene2Amnesia: React.FC = () => {
           </span>
         </div>
       </div>
+
+      <Caption text="Mañana… no se acuerda de nada." />
     </AbsoluteFill>
   );
 };
