@@ -7,18 +7,150 @@ import {buildFontFaceCSS} from '../fonts';
 const FONT_CSS = buildFontFaceCSS();
 
 /**
- * LOOP 2 · TU MEMORIA EN UN ARCHIVO (10s · 300 frames @ 30fps · 1080×1080)
+ * LOOP 2 · TU MEMORIA EN UN ARCHIVO (12s · 360 frames @ 30fps · 1080×1080)
  *
- * Text-first. Headline at top. Below it, a cortex.md file with five
- * layers labeled in plain Spanish (CONCEPTOS / HECHOS / RELACIONES /
- * PREGUNTAS / NOTAS) — the words a non-tech viewer can understand at
- * a glance, not the technical SINAPSIS/HIPOCAMPO labels.
+ * Hacking-style ASCII brain reveal. Every non-whitespace cell in the
+ * brain pattern starts as a random glitch character and locks into
+ * its target character on a staggered schedule (~120 frames). Once
+ * the brain settles, five capa labels orbit it in plain Spanish
+ * (conceptos / hechos / relaciones / preguntas / notas propias).
  */
 
+const BRAIN = `                                       ↑↑↑↑
+                              ↑↑↑↑↑↑↑↑    ↑↑    ↑↑  ↑↑↑↑
+                        ↑↑ ↑↑   ↑↑ ↑↑   ↑↑   ↑↑↑↑   ↑    ↑↑
+                    ↑↑↑↑↑      ↑  ↑↑  ↑    ↑         ↑      ↑↑↑
+                  ↑  ↑↑       ↑     ↑↑  ↑↑↑    ↑↑↑   ↑↑    ↑   ↑
+              ↑↑↑↑ ↑↑      ↑↑      ↑      ↑    ↑↑    ↑     ↑    ↑↑
+            ↑↑  ↑↑     ↑↑↑↑↑   ↑   ↑                 ↑↑       ↑   ↑
+          ↑↑↑  ↑    ↑      ↑    ↑↑  ↑↑    ↑   ↑↑    ↑ ↑       ↑ ↑  ↑↑
+         ↑↑↑  ↑   ↑  ↑↑  ↑↑↑    ↑      ↑      ↑   ↑ ↑ ↑     ↑↑       ↑
+       ↑ ↑↑↑     ↑    ↑  ↑↑↑↑   ↑    ↑   ↑↑   ↑      ↑↑    ↑ ↑   ↑↑↑ ↑
+      ↑ ↑ ↑↑↑↑↑ ↑     ↑  ↑ ↑↑   ↑     ↑  ↑    ↑     ↑   ↑  ↑        ↑↑ ↑
+     ↑   ↑ ↑    ↑     ↑  ↑ ↑↑   ↑   ↑↑↑    ↑↑↑↑↑↑  ↑     ↑↑       ↑     ↑
+    ↑↑ ↑↑↑  ↑  ↑      ↑   ↑↑  ↑ ↑↑  ↑↑↑↑↑↑         ↑          ↑↑   ↑↑↑  ↑↑
+    ↑ ↑  ↑     ↑  ↑  ↑↑↑    ↑   ↑↑↑          ↑     ↑   ↑↑ ↑↑ ↑    ↑  ↑ ↑  ↑
+    ↑↑↑   ↑            ↑↑↑     ↑↑           ↑↑  ↑  ↑  ↑↑     ↑  ↑   ↑ ↑ ↑ ↑
+    ↑↑ ↑    ↑↑           ↑↑↑↑↑↑↑     ↑     ↑ ↑     ↑↑↑    ↑  ↑↑↑↑   ↑↑ ↑  ↑
+    ↑↑   ↑↑↑   ↑↑↑   ↑↑ ↑      ↑    ↑↑↑↑ ↑↑  ↑            ↑     ↑        ↑ ↑
+    ↑↑↑↑       ↑  ↑↑   ↑     ↑    ↑↑      ↑↑   ↑    ↑↑    ↑  ↑  ↑    ↑ ↑  ↑↑
+      ↑↑ ↑         ↑↑ ↑    ↑  ↑↑↑↑           ↑↑↑↑↑     ↑↑↑      ↑    ↑     ↑
+       ↑  ↑     ↑↑↑↑↑↑    ↑↑↑                    ↑         ↑  ↑↑ ↑↑   ↑↑   ↑
+         ↑    ↑   ↑ ↑      ↑           ↑      ↑↑↑  ↑↑↑    ↑↑↑   ↑       ↑  ↑
+            ↑↑↑↑   ↑↑    ↑   ↑↑  ↑ ↑  ↑      ↑       ↑↑↑ ↑↑↑↑↑↑↑  ↑↑↑↑↑↑
+                   ↑↑↑ ↑ ↑        ↑     ↑↑↑     ↑↑↑↑↑↑↑↑ ↑   ↑↑     ↑↑↑
+                   ↑             ↑         ↑↑↑↑↑↑↑ ↑↑↑↑↑ ↑↑  ↑↑↑↑↑↑↑↑↑ ↑
+                    ↑ ↑      ↑  ↑     ↑↑↑↑    ↑↑↑ ↑↑↑↑↑↑ ↑↑↑↑↑    ↑↑↑↑↑↑
+                     ↑             ↑↑↑↑ ↑↑     ↑↑↑↑↑↑↑↑↑↑↑↑ ↑↑↑       ↑↑
+                      ↑↑↑↑↑↑    ↑↑       ↑↑↑ ↑↑↑ ↑ ↑ ↑ ↑↑↑↑ ↑↑↑     ↑↑↑
+                             ↑               ↑   ↑ ↑ ↑ ↑↑ ↑  ↑↑↑  ↑↑↑↑
+                                              ↑↑   ↑↑↑ ↑  ↑↑ ↑↑  ↑↑↑
+                                                ↑↑   ↑↑↑↑↑↑↑↑↑↑↑↑
+                                                  ↑    ↑↑↑↑↑↑↑
+                                                   ↑   ↑
+                                                   ↑↑  ↑
+                                                    ↑   ↑
+                                                     ↑  ↑
+                                                     ↑↑↑`;
+
+// Glitch character pool — chars that "look like the matrix" but read
+// as compatible with the eventual ↑ target.
+const HACK_POOL = '01╱╲↑↓→←|/\\-+=#$%@&*<>'.split('');
+
+// Pre-compute lock-in frame per character. Stable across renders.
+const NON_WS_INDICES: number[] = [];
+for (let i = 0; i < BRAIN.length; i++) {
+  if (BRAIN[i] !== ' ' && BRAIN[i] !== '\n') NON_WS_INDICES.push(i);
+}
+const TOTAL_HACK_FRAMES = 110;
+const LOCK_FRAMES = new Map<number, number>();
+for (let k = 0; k < NON_WS_INDICES.length; k++) {
+  const idx = NON_WS_INDICES[k];
+  // Spread lock-ins across [10, 10+TOTAL_HACK_FRAMES] with a pseudo-random
+  // shuffle so visual progression feels organic, not left-to-right.
+  const pseudoRand = ((k * 9301 + 49297) % 233280) / 233280;
+  LOCK_FRAMES.set(idx, 10 + Math.floor(pseudoRand * TOTAL_HACK_FRAMES));
+}
+
+// Each char that's still glitching changes ~every 2 frames.
+function glitchFor(charIndex: number, frame: number): string {
+  const noise = (charIndex * 31 + frame * 7) % HACK_POOL.length;
+  return HACK_POOL[noise];
+}
+
+function renderBrain(frame: number): string {
+  let out = '';
+  for (let i = 0; i < BRAIN.length; i++) {
+    const ch = BRAIN[i];
+    if (ch === ' ' || ch === '\n') {
+      out += ch;
+      continue;
+    }
+    const lockAt = LOCK_FRAMES.get(i) ?? 0;
+    if (frame >= lockAt) {
+      out += ch;
+    } else {
+      // While glitching, change every 2 frames
+      out += glitchFor(i, Math.floor(frame / 2));
+    }
+  }
+  return out;
+}
+
 const HEADLINE = 'TU MEMORIA EN UN ARCHIVO.';
-const SUBLINE = 'cinco capas. todo en Markdown. tuyo.';
-const FILENAME = 'CORTEX-mi-proyecto.md';
-const LAYERS = ['CONCEPTOS', 'HECHOS', 'RELACIONES', 'PREGUNTAS', 'NOTAS PROPIAS'];
+
+type Layer = {
+  label: string;
+  framePeak: number;
+  position: React.CSSProperties;
+  align: 'left' | 'right' | 'center';
+};
+
+const LAYERS: Layer[] = [
+  {label: 'CONCEPTOS',     framePeak: 150, align: 'center', position: {top: 220, left: '50%', transform: 'translateX(-50%)'}},
+  {label: 'HECHOS',        framePeak: 175, align: 'right',  position: {top: 420, right: 60}},
+  {label: 'RELACIONES',    framePeak: 200, align: 'right',  position: {bottom: 230, right: 80}},
+  {label: 'PREGUNTAS',     framePeak: 225, align: 'left',   position: {top: 420, left: 60}},
+  {label: 'NOTAS PROPIAS', framePeak: 250, align: 'left',   position: {bottom: 230, left: 80}},
+];
+
+const LayerLabel: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
+  const appear = interpolate(frame, [layer.framePeak, layer.framePeak + 16], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
+  let dx = 0, dy = 0;
+  if (layer.align === 'left') dx = -24;
+  if (layer.align === 'right') dx = 24;
+  if (layer.align === 'center') dy = -20;
+  const tx = (1 - appear) * dx;
+  const ty = (1 - appear) * dy;
+
+  const baseTransform = typeof layer.position.transform === 'string' ? layer.position.transform : '';
+  const finalTransform = `${baseTransform} translate(${tx}px, ${ty}px)`.trim();
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        ...layer.position,
+        transform: finalTransform,
+        opacity: appear,
+        textAlign: layer.align,
+        fontFamily: fontFamily.sans,
+        fontSize: 20,
+        fontWeight: 700,
+        letterSpacing: '0.20em',
+        color: palette.accent,
+        textTransform: 'uppercase',
+        lineHeight: 1,
+      }}
+    >
+      {layer.label}
+    </div>
+  );
+};
 
 export const Loop2Solution: React.FC = () => {
   const frame = useCurrentFrame();
@@ -28,26 +160,14 @@ export const Loop2Solution: React.FC = () => {
     Math.min(HEADLINE.length, Math.floor((frame - 4) * 1.4)),
   );
 
-  // File materializes after headline lands
-  const sheetOpacity = interpolate(frame, [40, 70], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
-  });
-  const sheetScale = interpolate(frame, [40, 70], [0.94, 1], {
+  const brainContent = renderBrain(frame);
+  const brainFadeIn = interpolate(frame, [4, 14], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
 
-  // Subline appears after layers settle
-  const sublineOpacity = interpolate(frame, [220, 250], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
-  });
-
-  const fadeOut = interpolate(frame, [285, 300], [1, 0], {
+  const fadeOut = interpolate(frame, [345, 360], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.cubic),
@@ -62,12 +182,12 @@ export const Loop2Solution: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          top: 110,
+          top: 100,
           left: 90,
           right: 90,
           textAlign: 'center',
           fontFamily: fontFamily.sans,
-          fontSize: 64,
+          fontSize: 60,
           fontWeight: 700,
           color: palette.ink,
           letterSpacing: '-0.01em',
@@ -76,127 +196,41 @@ export const Loop2Solution: React.FC = () => {
       >
         {HEADLINE.slice(0, headlineChars)}
         {headlineChars < HEADLINE.length && (
-          <span
-            style={{
-              opacity: frame % 22 < 11 ? 1 : 0,
-              color: palette.accent,
-              marginLeft: 4,
-            }}
-          >
-            ▌
-          </span>
+          <span style={{opacity: frame % 22 < 11 ? 1 : 0, color: palette.accent}}>▌</span>
         )}
       </div>
 
-      {/* FILE · center */}
+      {/* BRAIN · center · hacking reveal */}
       <div
         style={{
           position: 'absolute',
-          top: 320,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          padding: '0 90px',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          opacity: brainFadeIn,
         }}
       >
-        <div
+        <pre
           style={{
-            width: 720,
-            background: '#F5EBD0',
-            border: `2px solid ${palette.ink}`,
-            padding: '28px 36px',
-            boxShadow: '0 8px 24px rgba(27, 44, 79, 0.18)',
-            opacity: sheetOpacity,
-            transform: `scale(${sheetScale})`,
+            fontFamily: fontFamily.mono,
+            fontSize: 10,
+            fontWeight: 500,
+            lineHeight: 1.0,
+            color: palette.ink,
+            margin: 0,
+            textAlign: 'left',
+            whiteSpace: 'pre',
+            letterSpacing: '-0.02em',
           }}
         >
-          <div
-            style={{
-              fontFamily: fontFamily.mono,
-              fontSize: 22,
-              fontWeight: 600,
-              color: palette.ink,
-              borderBottom: `1px solid ${palette.ink}33`,
-              paddingBottom: 16,
-              marginBottom: 22,
-            }}
-          >
-            # {FILENAME}
-          </div>
-          <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
-            {LAYERS.map((layer, i) => {
-              const start = 90 + i * 24;
-              const opacity = interpolate(frame, [start, start + 16], [0, 1], {
-                extrapolateLeft: 'clamp',
-                extrapolateRight: 'clamp',
-                easing: Easing.out(Easing.cubic),
-              });
-              const x = interpolate(frame, [start, start + 16], [-24, 0], {
-                extrapolateLeft: 'clamp',
-                extrapolateRight: 'clamp',
-                easing: Easing.out(Easing.cubic),
-              });
-              return (
-                <div
-                  key={layer}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    gap: 14,
-                    opacity,
-                    transform: `translateX(${x}px)`,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: fontFamily.sans,
-                      fontSize: 20,
-                      fontWeight: 700,
-                      letterSpacing: '0.20em',
-                      color: palette.accent,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    ##
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: fontFamily.sans,
-                      fontSize: 22,
-                      fontWeight: 600,
-                      letterSpacing: '0.06em',
-                      color: palette.ink,
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {layer}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+          {brainContent}
+        </pre>
       </div>
 
-      {/* SUBLINE · bottom */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 110,
-          left: 90,
-          right: 90,
-          textAlign: 'center',
-          fontFamily: fontFamily.sans,
-          fontSize: 28,
-          fontWeight: 500,
-          color: palette.ink,
-          opacity: sublineOpacity * 0.8,
-          fontStyle: 'italic',
-        }}
-      >
-        {SUBLINE}
-      </div>
+      {/* FIVE LABELS · orbit the brain · appear after it settles */}
+      {LAYERS.map((layer) => (
+        <LayerLabel key={layer.label} layer={layer} frame={frame} />
+      ))}
     </AbsoluteFill>
   );
 };
