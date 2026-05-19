@@ -37,7 +37,7 @@ export const Root: React.FC = () => {
       <Composition
         id="loop-2-solucion"
         component={Loop2Solution}
-        durationInFrames={360}
+        durationInFrames={480}
         fps={fps}
         width={formats.square.width}
         height={formats.square.height}

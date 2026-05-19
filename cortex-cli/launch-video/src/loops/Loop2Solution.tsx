@@ -1,3 +1,4 @@
+import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {palette} from '../theme';
 import {fontFamily} from '../fonts';
@@ -7,13 +8,16 @@ import {buildFontFaceCSS} from '../fonts';
 const FONT_CSS = buildFontFaceCSS();
 
 /**
- * LOOP 2 · TU MEMORIA EN UN ARCHIVO (12s · 360 frames @ 30fps · 1080×1080)
+ * LOOP · the cortex piece (16s · 480 frames @ 30fps · 1080×1080)
  *
- * Hacking-style ASCII brain reveal. Every non-whitespace cell in the
- * brain pattern starts as a random glitch character and locks into
- * its target character on a staggered schedule (~120 frames). Once
- * the brain settles, five capa labels orbit it in plain Spanish
- * (conceptos / hechos / relaciones / preguntas / notas propias).
+ * Single self-contained video — the only one we ship.
+ *
+ *   0-30    title (blackletter) types in
+ *   10-70   brain ASCII hacking reveal (faster than before)
+ *   80-200  five fields appear with stagger, each with its function
+ *   210-380 closing message at the bottom · the value statement
+ *   380-470 hold
+ *   470-480 fade
  */
 
 const BRAIN = `                                       ↑↑↑↑
@@ -53,26 +57,19 @@ const BRAIN = `                                       ↑↑↑↑
                                                      ↑  ↑
                                                      ↑↑↑`;
 
-// Glitch character pool — chars that "look like the matrix" but read
-// as compatible with the eventual ↑ target.
 const HACK_POOL = '01╱╲↑↓→←|/\\-+=#$%@&*<>'.split('');
-
-// Pre-compute lock-in frame per character. Stable across renders.
 const NON_WS_INDICES: number[] = [];
 for (let i = 0; i < BRAIN.length; i++) {
   if (BRAIN[i] !== ' ' && BRAIN[i] !== '\n') NON_WS_INDICES.push(i);
 }
-const TOTAL_HACK_FRAMES = 110;
+const TOTAL_HACK_FRAMES = 60; // faster — was 110
 const LOCK_FRAMES = new Map<number, number>();
 for (let k = 0; k < NON_WS_INDICES.length; k++) {
   const idx = NON_WS_INDICES[k];
-  // Spread lock-ins across [10, 10+TOTAL_HACK_FRAMES] with a pseudo-random
-  // shuffle so visual progression feels organic, not left-to-right.
   const pseudoRand = ((k * 9301 + 49297) % 233280) / 233280;
   LOCK_FRAMES.set(idx, 10 + Math.floor(pseudoRand * TOTAL_HACK_FRAMES));
 }
 
-// Each char that's still glitching changes ~every 2 frames.
 function glitchFor(charIndex: number, frame: number): string {
   const noise = (charIndex * 31 + frame * 7) % HACK_POOL.length;
   return HACK_POOL[noise];
@@ -90,64 +87,176 @@ function renderBrain(frame: number): string {
     if (frame >= lockAt) {
       out += ch;
     } else {
-      // While glitching, change every 2 frames
       out += glitchFor(i, Math.floor(frame / 2));
     }
   }
   return out;
 }
 
-const HEADLINE = 'TU MEMORIA EN UN ARCHIVO.';
-
-type Layer = {
+type Field = {
   label: string;
+  purpose: string;
   framePeak: number;
   position: React.CSSProperties;
   align: 'left' | 'right' | 'center';
 };
 
-const LAYERS: Layer[] = [
-  {label: 'CONCEPTOS',     framePeak: 150, align: 'center', position: {top: 220, left: '50%', transform: 'translateX(-50%)'}},
-  {label: 'HECHOS',        framePeak: 175, align: 'right',  position: {top: 420, right: 60}},
-  {label: 'RELACIONES',    framePeak: 200, align: 'right',  position: {bottom: 230, right: 80}},
-  {label: 'PREGUNTAS',     framePeak: 225, align: 'left',   position: {top: 420, left: 60}},
-  {label: 'NOTAS PROPIAS', framePeak: 250, align: 'left',   position: {bottom: 230, left: 80}},
+const FIELDS: Field[] = [
+  {
+    label: 'CONCEPTOS',
+    purpose: 'para no perder lo que pensaste.',
+    framePeak: 80,
+    align: 'center',
+    position: {top: 210, left: '50%', transform: 'translateX(-50%)'},
+  },
+  {
+    label: 'HECHOS',
+    purpose: 'para no repetir lo que ya sabés.',
+    framePeak: 102,
+    align: 'right',
+    position: {top: 360, right: 40},
+  },
+  {
+    label: 'RELACIONES',
+    purpose: 'para ver cómo encajan tus ideas.',
+    framePeak: 124,
+    align: 'right',
+    position: {top: 530, right: 40},
+  },
+  {
+    label: 'PREGUNTAS',
+    purpose: 'para no olvidar lo que falta resolver.',
+    framePeak: 146,
+    align: 'left',
+    position: {top: 360, left: 40},
+  },
+  {
+    label: 'NOTAS PROPIAS',
+    purpose: 'para separar tu lectura del hecho.',
+    framePeak: 168,
+    align: 'left',
+    position: {top: 530, left: 40},
+  },
 ];
 
-const LayerLabel: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => {
-  const appear = interpolate(frame, [layer.framePeak, layer.framePeak + 16], [0, 1], {
+const FieldLabel: React.FC<{field: Field; frame: number}> = ({field, frame}) => {
+  const appear = interpolate(frame, [field.framePeak, field.framePeak + 16], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.out(Easing.cubic),
   });
-  let dx = 0, dy = 0;
-  if (layer.align === 'left') dx = -24;
-  if (layer.align === 'right') dx = 24;
-  if (layer.align === 'center') dy = -20;
+
+  let dx = 0;
+  let dy = 0;
+  if (field.align === 'left') dx = -22;
+  if (field.align === 'right') dx = 22;
+  if (field.align === 'center') dy = -18;
   const tx = (1 - appear) * dx;
   const ty = (1 - appear) * dy;
-
-  const baseTransform = typeof layer.position.transform === 'string' ? layer.position.transform : '';
+  const baseTransform =
+    typeof field.position.transform === 'string' ? field.position.transform : '';
   const finalTransform = `${baseTransform} translate(${tx}px, ${ty}px)`.trim();
 
   return (
     <div
       style={{
         position: 'absolute',
-        ...layer.position,
+        ...field.position,
         transform: finalTransform,
         opacity: appear,
-        textAlign: layer.align,
-        fontFamily: fontFamily.sans,
-        fontSize: 20,
-        fontWeight: 700,
-        letterSpacing: '0.20em',
-        color: palette.accent,
-        textTransform: 'uppercase',
-        lineHeight: 1,
+        textAlign: field.align,
+        maxWidth: 280,
       }}
     >
-      {layer.label}
+      <div
+        style={{
+          fontFamily: fontFamily.sans,
+          fontSize: 18,
+          fontWeight: 700,
+          letterSpacing: '0.20em',
+          color: palette.accent,
+          textTransform: 'uppercase',
+          lineHeight: 1,
+          marginBottom: 6,
+        }}
+      >
+        {field.label}
+      </div>
+      <div
+        style={{
+          fontFamily: fontFamily.sans,
+          fontSize: 14,
+          fontWeight: 500,
+          fontStyle: 'italic',
+          color: palette.text,
+          opacity: 0.75,
+          lineHeight: 1.3,
+        }}
+      >
+        {field.purpose}
+      </div>
+    </div>
+  );
+};
+
+const CLOSING_LINES = [
+  {text: 'Es un archivo. Lo abrís en cualquier IA.', start: 220},
+  {text: 'Trabajás en serie o en paralelo, sin perder el hilo.', start: 252},
+  {text: 'Decís /update y tu proyecto persiste.', start: 284, highlight: '/update'},
+  {text: 'Las decisiones no se borran. Se acumulan.', start: 316},
+];
+
+const ClosingLine: React.FC<{
+  text: string;
+  start: number;
+  highlight?: string;
+  frame: number;
+}> = ({text, start, highlight, frame}) => {
+  const opacity = interpolate(frame, [start, start + 18], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
+  const y = interpolate(frame, [start, start + 18], [10, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  });
+
+  // Render with optional highlighted token
+  const parts = highlight ? text.split(highlight) : [text];
+
+  return (
+    <div
+      style={{
+        fontFamily: fontFamily.sans,
+        fontSize: 21,
+        fontWeight: 600,
+        color: palette.ink,
+        opacity,
+        transform: `translateY(${y}px)`,
+        textAlign: 'center',
+        letterSpacing: '0.005em',
+        lineHeight: 1.45,
+      }}
+    >
+      {parts.map((part, i) => (
+        <React.Fragment key={i}>
+          {part}
+          {i < parts.length - 1 && highlight && (
+            <span
+              style={{
+                fontFamily: fontFamily.mono,
+                color: palette.accent,
+                fontWeight: 700,
+                padding: '0 4px',
+              }}
+            >
+              {highlight}
+            </span>
+          )}
+        </React.Fragment>
+      ))}
     </div>
   );
 };
@@ -155,10 +264,9 @@ const LayerLabel: React.FC<{layer: Layer; frame: number}> = ({layer, frame}) => 
 export const Loop2Solution: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const headlineChars = Math.max(
-    0,
-    Math.min(HEADLINE.length, Math.floor((frame - 4) * 1.4)),
-  );
+  // Title typewriter in blackletter
+  const TITLE = 'tu memoria en un archivo.';
+  const titleChars = Math.max(0, Math.min(TITLE.length, Math.floor((frame - 4) * 1.4)));
 
   const brainContent = renderBrain(frame);
   const brainFadeIn = interpolate(frame, [4, 14], [0, 1], {
@@ -167,7 +275,7 @@ export const Loop2Solution: React.FC = () => {
     easing: Easing.out(Easing.cubic),
   });
 
-  const fadeOut = interpolate(frame, [345, 360], [1, 0], {
+  const fadeOut = interpolate(frame, [465, 480], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.in(Easing.cubic),
@@ -178,24 +286,23 @@ export const Loop2Solution: React.FC = () => {
       <style>{FONT_CSS}</style>
       <PaperBackground />
 
-      {/* HEADLINE · top */}
+      {/* TITLE · blackletter · top */}
       <div
         style={{
           position: 'absolute',
-          top: 100,
-          left: 90,
-          right: 90,
+          top: 60,
+          left: 80,
+          right: 80,
           textAlign: 'center',
-          fontFamily: fontFamily.sans,
-          fontSize: 60,
-          fontWeight: 700,
+          fontFamily: fontFamily.blackletter,
+          fontSize: 72,
           color: palette.ink,
-          letterSpacing: '-0.01em',
-          lineHeight: 1.05,
+          letterSpacing: '0',
+          lineHeight: 1.0,
         }}
       >
-        {HEADLINE.slice(0, headlineChars)}
-        {headlineChars < HEADLINE.length && (
+        {TITLE.slice(0, titleChars)}
+        {titleChars < TITLE.length && (
           <span style={{opacity: frame % 22 < 11 ? 1 : 0, color: palette.accent}}>▌</span>
         )}
       </div>
@@ -204,7 +311,7 @@ export const Loop2Solution: React.FC = () => {
       <div
         style={{
           position: 'absolute',
-          top: '50%',
+          top: 430,
           left: '50%',
           transform: 'translate(-50%, -50%)',
           opacity: brainFadeIn,
@@ -213,7 +320,7 @@ export const Loop2Solution: React.FC = () => {
         <pre
           style={{
             fontFamily: fontFamily.mono,
-            fontSize: 10,
+            fontSize: 9,
             fontWeight: 500,
             lineHeight: 1.0,
             color: palette.ink,
@@ -227,10 +334,34 @@ export const Loop2Solution: React.FC = () => {
         </pre>
       </div>
 
-      {/* FIVE LABELS · orbit the brain · appear after it settles */}
-      {LAYERS.map((layer) => (
-        <LayerLabel key={layer.label} layer={layer} frame={frame} />
+      {/* FIVE FIELDS · orbit the brain with their "para qué" */}
+      {FIELDS.map((field) => (
+        <FieldLabel key={field.label} field={field} frame={frame} />
       ))}
+
+      {/* CLOSING MESSAGE · bottom · the value statement */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 90,
+          left: 80,
+          right: 80,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+          alignItems: 'center',
+        }}
+      >
+        {CLOSING_LINES.map((line) => (
+          <ClosingLine
+            key={line.text}
+            text={line.text}
+            start={line.start}
+            highlight={line.highlight}
+            frame={frame}
+          />
+        ))}
+      </div>
     </AbsoluteFill>
   );
 };
