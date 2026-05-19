@@ -25,11 +25,11 @@ export const Root: React.FC = () => {
         height={formats.square.height}
       />
 
-      {/* LinkedIn carousel · 3 silent square loops */}
+      {/* LinkedIn carousel · 3 silent square loops · text-first */}
       <Composition
         id="loop-1-problema"
         component={Loop1Problem}
-        durationInFrames={180}
+        durationInFrames={240}
         fps={fps}
         width={formats.square.width}
         height={formats.square.height}
@@ -37,7 +37,7 @@ export const Root: React.FC = () => {
       <Composition
         id="loop-2-solucion"
         component={Loop2Solution}
-        durationInFrames={240}
+        durationInFrames={300}
         fps={fps}
         width={formats.square.width}
         height={formats.square.height}
@@ -45,7 +45,7 @@ export const Root: React.FC = () => {
       <Composition
         id="loop-3-handoff"
         component={Loop3Handoff}
-        durationInFrames={210}
+        durationInFrames={300}
         fps={fps}
         width={formats.square.width}
         height={formats.square.height}
